@@ -1,0 +1,4112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Ремонт и Навар PRO — Симулятор Автоперекупа</title>
+  <style>
+    /* 5 тем оформления */
+    :root,
+    [data-theme="graphite"] {
+      --bg-outer: #090b0f;
+      --bg-main: #121418;
+      --bg-surface: #1a1d24;
+      --bg-elevated: #222630;
+      --bg-input: #15181e;
+      --border: #2b303c;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent: #10b981;
+      --accent-soft: rgba(16, 185, 129, 0.14);
+      --accent-text: #042f1e;
+      --warn: #f59e0b;
+      --warn-soft: rgba(245, 158, 11, 0.14);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.14);
+      --info: #38bdf8;
+      --info-soft: rgba(56, 189, 248, 0.14);
+      --purple: #a855f7;
+      --purple-soft: rgba(168, 85, 247, 0.14);
+    }
+
+    [data-theme="light"] {
+      --bg-outer: #dde2e8;
+      --bg-main: #f3f5f8;
+      --bg-surface: #ffffff;
+      --bg-elevated: #ebeff4;
+      --bg-input: #ffffff;
+      --border: #d7dde5;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --text-dim: #9ca3af;
+      --accent: #059669;
+      --accent-soft: rgba(5, 150, 105, 0.12);
+      --accent-text: #ffffff;
+      --warn: #d97706;
+      --warn-soft: rgba(217, 119, 6, 0.12);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.12);
+      --info: #0284c7;
+      --info-soft: rgba(2, 132, 199, 0.12);
+      --purple: #7e22ce;
+      --purple-soft: rgba(126, 34, 206, 0.12);
+    }
+
+    [data-theme="midnight"] {
+      --bg-outer: #050914;
+      --bg-main: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-elevated: #28364e;
+      --bg-input: #141f33;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --accent-text: #082f49;
+      --warn: #fbbf24;
+      --warn-soft: rgba(251, 191, 36, 0.15);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.15);
+      --info: #818cf8;
+      --info-soft: rgba(129, 140, 248, 0.15);
+      --purple: #c084fc;
+      --purple-soft: rgba(192, 132, 252, 0.15);
+    }
+
+    [data-theme="loft"] {
+      --bg-outer: #0c0a09;
+      --bg-main: #171412;
+      --bg-surface: #221e1b;
+      --bg-elevated: #2c2723;
+      --bg-input: #1b1815;
+      --border: #38312c;
+      --text-main: #f5f5f4;
+      --text-muted: #a8a29e;
+      --text-dim: #78716c;
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.15);
+      --accent-text: #1c1917;
+      --warn: #eab308;
+      --warn-soft: rgba(234, 179, 8, 0.15);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.15);
+      --info: #38bdf8;
+      --info-soft: rgba(56, 189, 248, 0.15);
+      --purple: #fb923c;
+      --purple-soft: rgba(251, 146, 60, 0.15);
+    }
+
+    [data-theme="cyber"] {
+      --bg-outer: #040507;
+      --bg-main: #0f1013;
+      --bg-surface: #17191e;
+      --bg-elevated: #20232a;
+      --bg-input: #131519;
+      --border: #2a2f3a;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent: #00e676;
+      --accent-soft: rgba(0, 230, 118, 0.14);
+      --accent-text: #041f11;
+      --warn: #ffd600;
+      --warn-soft: rgba(255, 214, 0, 0.14);
+      --danger: #ff3b30;
+      --danger-soft: rgba(255, 59, 48, 0.14);
+      --info: #00e5ff;
+      --info-soft: rgba(0, 229, 255, 0.14);
+      --purple: #d500f9;
+      --purple-soft: rgba(213, 0, 249, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-outer);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Смартфон-контейнер */
+    .phone-shell {
+      position: relative;
+      width: 100%;
+      max-width: 424px;
+      height: 100vh;
+      max-height: 860px;
+      background-color: var(--bg-main);
+      border: 2px solid var(--border);
+      border-radius: 32px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    @media (max-width: 440px) {
+      .phone-shell {
+        max-width: 100%;
+        max-height: 100vh;
+        height: 100dvh;
+        border: none;
+        border-radius: 0;
+      }
+    }
+
+    /* Статус-бар телефона */
+    .phone-status {
+      height: 24px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background-color: var(--bg-main);
+      flex-shrink: 0;
+    }
+
+    .notch-pill {
+      width: 54px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+    }
+
+    /* Верхняя шапка */
+    .app-header {
+      padding: 8px 15px 11px;
+      background-color: var(--bg-main);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app-title-small {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .balance-value {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      transition: color 0.15s ease;
+    }
+
+    .balance-value.flash-up { color: var(--accent); }
+    .balance-value.flash-down { color: var(--warn); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-stat {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 4px 9px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .header-bars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 5px;
+      background-color: var(--bg-surface);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.25s ease;
+    }
+
+    /* Плашка рыночного тренда и дня */
+    .market-ticker-bar {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 5px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+
+    /* Сегментированные переключатели подвкладок */
+    .segmented-control {
+      display: flex;
+      background-color: var(--bg-surface);
+      padding: 3px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      gap: 3px;
+    }
+
+    .seg-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 7px 4px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .seg-btn.active {
+      background-color: var(--bg-elevated);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Прокручиваемый экран */
+    .app-viewport {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 13px 15px 22px;
+    }
+
+    .app-viewport::-webkit-scrollbar { width: 4px; }
+    .app-viewport::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 99px;
+    }
+
+    .tab-section {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .tab-section.active { display: flex; }
+
+    .subview {
+      display: none;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .subview.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Карточки */
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    /* Кнопки */
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: opacity 0.15s ease, transform 0.08s ease, background-color 0.15s ease;
+    }
+
+    .btn:active:not(:disabled) { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--accent-text);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-soft {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .btn-warn {
+      background-color: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .btn-purple {
+      background-color: var(--purple-soft);
+      color: var(--purple);
+    }
+
+    .btn-large {
+      padding: 13px;
+      font-size: 13px;
+      border-radius: 12px;
+      width: 100%;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .mini-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .mini-label {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    .mini-val {
+      font-size: 14.5px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .action-tile {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 10px;
+      text-align: left;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: border-color 0.15s ease;
+    }
+
+    .action-tile:hover:not(:disabled) { border-color: var(--accent); }
+    .action-tile:disabled { opacity: 0.42; cursor: not-allowed; }
+
+    .action-tile-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .action-tile-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Карточка автомобиля */
+    .car-item {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .car-item.hot {
+      border-color: var(--warn);
+    }
+
+    .car-row-main {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .car-icon-box {
+      width: 72px;
+      height: 52px;
+      border-radius: 11px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .car-year-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .car-info-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .car-name-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .car-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .tag {
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background-color: var(--bg-elevated);
+      color: var(--text-muted);
+    }
+
+    .tag.accent { background-color: var(--accent-soft); color: var(--accent); }
+    .tag.warn { background-color: var(--warn-soft); color: var(--warn); }
+    .tag.danger { background-color: var(--danger-soft); color: var(--danger); }
+    .tag.info { background-color: var(--info-soft); color: var(--info); }
+    .tag.purple { background-color: var(--purple-soft); color: var(--purple); }
+
+    .car-meta-line {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .car-price-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .car-price {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .car-market-est {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    .nodes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 11px;
+      background-color: var(--bg-main);
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .node-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .node-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .node-bar {
+      height: 4px;
+      background-color: var(--bg-elevated);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .node-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+
+    .workshop-drawer {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .workshop-drawer.open { display: flex; }
+
+    .input-field, .select-field {
+      width: 100%;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: var(--text-main);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .input-field:focus, .select-field:focus {
+      border-color: var(--accent);
+    }
+
+    .chips-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .chips-scroll::-webkit-scrollbar { height: 0; }
+
+    .chip {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 5px 9px;
+      border-radius: 99px;
+      font-size: 10.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    .log-row {
+      font-size: 11.5px;
+      line-height: 1.38;
+      padding: 8px 10px;
+      background-color: var(--bg-main);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .log-meta {
+      font-size: 9.5px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .theme-card {
+      background-color: var(--bg-elevated);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 9px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      color: var(--text-main);
+    }
+
+    .theme-card.active {
+      border-color: var(--accent);
+      background-color: var(--accent-soft);
+    }
+
+    .theme-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 0;
+    }
+
+    .toggle-switch {
+      width: 42px;
+      height: 24px;
+      border-radius: 99px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border);
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch.on {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .toggle-knob {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: #fff;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s ease;
+    }
+
+    .toggle-switch.on .toggle-knob {
+      transform: translateX(18px);
+    }
+
+    /* Нижняя навигация */
+    .bottom-nav {
+      background-color: var(--bg-main);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 8px 10px;
+      gap: 4px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .nav-btn {
+      position: relative;
+      background: transparent;
+      border: none;
+      border-radius: 11px;
+      padding: 6px 2px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+      background-color: var(--accent-soft);
+    }
+
+    .nav-btn span {
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 2px;
+      right: 7px;
+      background-color: var(--bg-elevated);
+      color: var(--text-main);
+      font-size: 8.5px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+    }
+
+    /* Внутристраничное модальное окно (Торг / Сброс / Экспорт) */
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 80;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .modal-window {
+      width: 100%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+    }
+
+    .toast-container {
+      position: absolute;
+      bottom: 68px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      pointer-events: none;
+      z-index: 90;
+    }
+
+    .toast {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      color: var(--text-main);
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warn { border-left-color: var(--warn); }
+
+    .empty-box {
+      background-color: var(--bg-surface);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 22px 15px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body data-theme="graphite">
+  <div class="phone-shell">
+    <!-- Статус-бар телефона -->
+    <div class="phone-status">
+      <span id="clockDisplay">15:48</span>
+      <div class="notch-pill"></div>
+      <span id="statusTitleDisplay">День 1 • Ремонт и Навар</span>
+    </div>
+
+    <!-- Верхняя шапка -->
+    <header class="app-header">
+      <div class="header-main">
+        <div class="brand-block">
+          <div class="app-title-small">
+            <span id="playerGarageTitle">Ремонт и Навар</span>
+            <span>•</span>
+            <span id="passiveIncomeBadge" style="color:var(--accent);">+0 ₽/дн</span>
+          </div>
+          <div class="balance-value" id="balanceDisplay">115 000.00 ₽</div>
+        </div>
+
+        <div class="header-right">
+          <div class="pill-stat" title="Репутация на авторынке">
+            <span style="color:var(--warn);">★</span>
+            <span id="repValueDisplay">10</span>
+          </div>
+          <button class="icon-btn" id="quickCoffeeBtn" title="Выпить кофе и шаурму (+40 Бодрости)">
+            ☕
+          </button>
+        </div>
+      </div>
+
+      <div class="header-bars">
+        <div class="bar-group">
+          <div class="bar-label">
+            <span id="repRankDisplay">Гаражный новичок</span>
+            <span id="repNextDisplay">10 / 25</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="repBarFill" style="width:40%; background-color:var(--warn);"></div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-label">
+            <span>Бодрость</span>
+            <span id="energyValueDisplay">100 / 100 ⚡</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="energyBarFill" style="width:100%; background-color:var(--accent);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Живой индикатор состояния рынка и расходов -->
+      <div class="market-ticker-bar">
+        <span id="marketTrendBadge" style="color:var(--info);">📊 Стабильный рынок (100%)</span>
+        <span id="dailyUpkeepBadge" style="color:var(--text-muted);">Аренда: -3 200 ₽/дн</span>
+      </div>
+    </header>
+
+    <!-- Контентная область -->
+    <main class="app-viewport">
+      <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
+      <section class="tab-section active" id="tab-home">
+        <div class="segmented-control" id="homeSegments">
+          <button class="seg-btn active" data-homeseg="sub-work">Заработок</button>
+          <button class="seg-btn" data-homeseg="sub-quests">Контракты</button>
+          <button class="seg-btn" data-homeseg="sub-journal">Журнал</button>
+        </div>
+
+        <!-- 1.1: Заработок и Сводка -->
+        <div class="subview active" id="sub-work">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Подработка и поиск вариантов</div>
+                <div class="card-subtitle">Копи на диагностику и лови срочные выкупы у собственников</div>
+              </div>
+              <span class="tag accent" id="comboBadge">x1.0</span>
+            </div>
+
+            <button class="btn btn-primary btn-large" id="mainHustleBtn">
+              <span id="mainHustleBtnText">Таксовать / Искать авто (+180 ₽ • -6 ⚡)</span>
+            </button>
+
+            <div class="grid-2">
+              <button class="action-tile" id="inspectOrderBtn">
+                <div class="action-tile-top">
+                  <span>Выездной подбор</span>
+                  <span style="color:var(--accent);" id="inspectRewardLabel">+1 900 ₽</span>
+                </div>
+                <div class="action-tile-sub" id="inspectCooldownText">Осмотр клиенту (-18 ⚡)</div>
+              </button>
+
+              <button class="action-tile" id="garageShiftBtn">
+                <div class="action-tile-top">
+                  <span>Смена на СТО</span>
+                  <span style="color:var(--info);" id="shiftRewardLabel">+3 600 ₽</span>
+                </div>
+                <div class="action-tile-sub" id="shiftCooldownText">Калым в боксе (-32 ⚡)</div>
+              </button>
+
+              <button class="action-tile" id="scoutDealBtn">
+                <div class="action-tile-top">
+                  <span>Прозвон базы</span>
+                  <span style="color:var(--warn);">2 500 ₽</span>
+                </div>
+                <div class="action-tile-sub">Перехват срочного выкупа</div>
+              </button>
+
+              <button class="action-tile" id="buyShawarmaBtn">
+                <div class="action-tile-top">
+                  <span>Кофе и шаурма</span>
+                  <span id="coffeeCostLabel" style="color:var(--warn);">1 400 ₽</span>
+                </div>
+                <div class="action-tile-sub">Восстановить +40 ⚡</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Сводка капитала и склада запчастей -->
+          <div class="grid-2">
+            <div class="mini-card">
+              <span class="mini-label">Куплено / Продано</span>
+              <span class="mini-val" id="statBoughtSold">0 / 0</span>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Чистый навар</span>
+              <span class="mini-val" id="statProfit" style="color:var(--accent);">0.00 ₽</span>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Боксы / Склад ЗЧ</span>
+              <span class="mini-val" id="statGarageSlots">0/2 • 0 дет.</span>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Оценка авто в гараже</span>
+              <span class="mini-val" id="statGarageValue">0.00 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.2: Заказы клиентов и Контракты -->
+        <div class="subview" id="sub-quests">
+          <div class="card">
+            <div>
+              <div class="card-title">Заказы клиентов под ключ (+20% к рынку)</div>
+              <div class="card-subtitle">Пригони подходящий обслуженный автомобиль из своего Гаража без уплаты налога</div>
+            </div>
+            <div id="clientOrdersList" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div>
+              <div class="card-title">Контракты перекупа</div>
+              <div class="card-subtitle">Премии за выполнение ключевых этапов</div>
+            </div>
+            <div id="questsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+        </div>
+
+        <!-- 1.3: Журнал операций -->
+        <div class="subview" id="sub-journal">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Журнал операций</div>
+              <div style="display:flex; gap:4px;">
+                <button class="chip active" data-logfilter="all" style="padding:3px 8px;">Все</button>
+                <button class="chip" data-logfilter="deal" style="padding:3px 8px;">Сделки</button>
+                <button class="chip" data-logfilter="repair" style="padding:3px 8px;">Ремонт</button>
+              </div>
+            </div>
+            <div class="log-list" id="terminalBody"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 2: МАГАЗИН (Объявления + Аукцион + Выезды в Регионы) -->
+      <section class="tab-section" id="tab-market">
+        <div class="segmented-control" id="marketSegments">
+          <button class="seg-btn active" data-marketseg="sub-listings">Объявления</button>
+          <button class="seg-btn" data-marketseg="sub-auction">Слепой Аукцион</button>
+          <button class="seg-btn" data-marketseg="sub-regions">Регионы</button>
+        </div>
+
+        <!-- 2.1: Доска объявлений -->
+        <div class="subview active" id="sub-listings">
+          <div class="card" style="gap:8px; padding:11px;">
+            <div style="display:flex; gap:7px;">
+              <input
+                type="text"
+                id="marketSearchInput"
+                class="input-field"
+                placeholder="Поиск (ВАЗ, Ока, Priora, Solaris, Camry...)"
+                autocomplete="off"
+              />
+              <button class="btn btn-secondary" id="toggleFiltersBtn">Фильтры</button>
+              <button class="btn btn-soft" id="refreshMarketBtn" title="Обновить ленту за 1 500 ₽">⟳</button>
+            </div>
+
+            <div id="advancedFiltersBox" style="display:none; flex-direction:column; gap:7px; padding-top:4px;">
+              <div class="grid-2">
+                <select id="engineFilterSelect" class="select-field">
+                  <option value="all">Все двигатели</option>
+                  <option value="small">0.8 – 1.6 л</option>
+                  <option value="medium">1.8 – 2.4 л</option>
+                  <option value="large">2.5 – 5.7 л</option>
+                </select>
+                <select id="sortFilterSelect" class="select-field">
+                  <option value="default">Сначала свежие</option>
+                  <option value="price_asc">Сначала дешевле</option>
+                  <option value="price_desc">Сначала дороже</option>
+                  <option value="cond_desc">По состоянию</option>
+                </select>
+              </div>
+              <div class="grid-2">
+                <input type="number" id="minPriceInput" class="input-field" placeholder="Цена от (₽)" step="10000" />
+                <input type="number" id="maxPriceInput" class="input-field" placeholder="Цена до (₽)" step="10000" />
+              </div>
+            </div>
+
+            <div class="chips-scroll" id="priceQuickChips">
+              <button class="chip active" data-min="" data-max="">Все цены</button>
+              <button class="chip" data-min="0" data-max="150000">До 150 тыс.</button>
+              <button class="chip" data-min="150000" data-max="450000">150 – 450 тыс.</button>
+              <button class="chip" data-min="450000" data-max="1200000">450 тыс. – 1.2 млн</button>
+              <button class="chip" data-min="1200000" data-max="3500000">1.2 – 3.5 млн</button>
+              <button class="chip" data-min="3500000" data-max="">3.5+ млн ₽</button>
+            </div>
+          </div>
+
+          <div id="marketCarsList" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+
+        <!-- 2.2: Слепой Аукцион -->
+        <div class="subview" id="sub-auction">
+          <div class="card" id="auctionContainer"></div>
+        </div>
+
+        <!-- 2.3: Выезды за авто в Регионы -->
+        <div class="subview" id="sub-regions">
+          <div class="card">
+            <div>
+              <div class="card-title">Перегон авто из других регионов</div>
+              <div class="card-subtitle">Отправься в командировку за редкими комплектациями и живыми кузовами ниже столичного рынка</div>
+            </div>
+            <div id="regionsList" style="display:flex; flex-direction:column; gap:9px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 3: ГАРАЖ (Мастерская, Запчасти, Тюнинг и Продажа) -->
+      <section class="tab-section" id="tab-garage">
+        <div class="card" style="padding:11px 13px; gap:9px;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <div class="card-title">Мой Гараж и Склад</div>
+              <div class="card-subtitle" id="garageSummarySub">Боксы: 0/2 • Склад б/у узлов: 0 шт.</div>
+            </div>
+            <button class="btn btn-soft" id="expandGarageBtn">+1 Бокс (85 000 ₽)</button>
+          </div>
+
+          <!-- Выбор качества запчастей для ремонта -->
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <span style="font-size:10.5px; color:var(--text-muted); font-weight:600;">Качество запчастей при ремонте:</span>
+            <div class="segmented-control" id="partsQualitySelector">
+              <button class="seg-btn" data-partsq="budget">Разборка (-35% ₽)</button>
+              <button class="seg-btn active" data-partsq="standard">Стандарт (100%)</button>
+              <button class="seg-btn" data-partsq="oem">Оригинал (+10% ценность)</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="garageCarsList" style="display:flex; flex-direction:column; gap:12px;"></div>
+      </section>
+
+      <!-- ВКЛАДКА 4: БИЗНЕС (Автосервис + Банк + Достижения) -->
+      <section class="tab-section" id="tab-business">
+        <div class="segmented-control" id="businessSegments">
+          <button class="seg-btn active" data-bizseg="sub-upgrades">Сервис</button>
+          <button class="seg-btn" data-bizseg="sub-bank">Банк и Займы</button>
+          <button class="seg-btn" data-bizseg="sub-achievements">Трофеи</button>
+        </div>
+
+        <!-- 4.1: Оборудование и команда -->
+        <div class="subview active" id="sub-upgrades">
+          <div class="card">
+            <div>
+              <div class="card-title">Оборудование и Команда</div>
+              <div class="card-subtitle">Снижай стоимость ремонта, открывай точный подбор и увеличивай доход</div>
+            </div>
+            <div id="upgradesList" style="display:flex; flex-direction:column; gap:9px;"></div>
+          </div>
+        </div>
+
+        <!-- 4.2: Финансовый блок (Вклады и Кредиты) -->
+        <div class="subview" id="sub-bank">
+          <div class="card">
+            <div>
+              <div class="card-title">Вклад под процент (+1.5% в игровой день)</div>
+              <div class="card-subtitle">Храни свободный капитал на депозите, чтобы он перекрывал аренду гаража</div>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">На сберегательном счете:</span>
+              <span class="mini-val" id="bankDepositDisplay" style="color:var(--accent);">0.00 ₽</span>
+            </div>
+            <div class="grid-2">
+              <button class="btn btn-primary" id="depositAddBtn">Положить 25 000 ₽</button>
+              <button class="btn btn-secondary" id="depositWithdrawBtn">Снять всё</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div>
+              <div class="card-title">Оборотный кредит перекупа (2.5% в день)</div>
+              <div class="card-subtitle">Возьми быстрые деньги, если не хватает на горячий выкуп автомобиля</div>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Текущий долг банку:</span>
+              <span class="mini-val" id="bankLoanDisplay" style="color:var(--danger);">0.00 ₽</span>
+            </div>
+            <div class="grid-2">
+              <button class="btn btn-warn" id="loanTakeBtn">Взять 50 000 ₽</button>
+              <button class="btn btn-secondary" id="loanRepayBtn">Погасить 50 000 ₽</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.3: Достижения -->
+        <div class="subview" id="sub-achievements">
+          <div class="card">
+            <div>
+              <div class="card-title">Достижения в «Ремонт и Навар»</div>
+              <div class="card-subtitle">Открывай медали за мастерство в перепродажах и ремонте</div>
+            </div>
+            <div id="achievementsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 5: НАСТРОЙКИ -->
+      <section class="tab-section" id="tab-settings">
+        <div class="card">
+          <div>
+            <div class="card-title">Тема оформления</div>
+            <div class="card-subtitle">Выбери комфортный стиль интерфейса</div>
+          </div>
+          <div class="theme-grid" id="themeSelectorGrid">
+            <button class="theme-card active" data-settheme="graphite">
+              <span class="theme-swatch" style="background:#131519; box-shadow:inset 0 0 0 4px #10b981;"></span>
+              <div>
+                <div style="font-size:12px; font-weight:700;">Графит и Мята</div>
+                <div style="font-size:10px; color:var(--text-muted);">Спокойная тёмная</div>
+              </div>
+            </button>
+
+            <button class="theme-card" data-settheme="light">
+              <span class="theme-swatch" style="background:#f4f6f8; box-shadow:inset 0 0 0 4px #059669;"></span>
+              <div>
+                <div style="font-size:12px; font-weight:700;">Светлый День</div>
+                <div style="font-size:10px; color:var(--text-muted);">Чистая дневная</div>
+              </div>
+            </button>
+
+            <button class="theme-card" data-settheme="midnight">
+              <span class="theme-swatch" style="background:#0f172a; box-shadow:inset 0 0 0 4px #38bdf8;"></span>
+              <div>
+                <div style="font-size:12px; font-weight:700;">Полночь</div>
+                <div style="font-size:10px; color:var(--text-muted);">Глубокий синий</div>
+              </div>
+            </button>
+
+            <button class="theme-card" data-settheme="loft">
+              <span class="theme-swatch" style="background:#171412; box-shadow:inset 0 0 0 4px #f59e0b;"></span>
+              <div>
+                <div style="font-size:12px; font-weight:700;">Гаражный Лофт</div>
+                <div style="font-size:10px; color:var(--text-muted);">Тёплый янтарь</div>
+              </div>
+            </button>
+
+            <button class="theme-card" data-settheme="cyber" style="grid-column: span 2;">
+              <span class="theme-swatch" style="background:#101114; box-shadow:inset 0 0 0 4px #00e676;"></span>
+              <div>
+                <div style="font-size:12px; font-weight:700;">Кибер-Классика</div>
+                <div style="font-size:10px; color:var(--text-muted);">Контрастный неон</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Комфорт и Геймплей</div>
+
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <label style="font-size:11px; color:var(--text-muted);">Название твоего гаража в шапке:</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="customTitleInput" class="input-field" maxlength="24" placeholder="Ремонт и Навар" />
+              <button class="btn btn-secondary" id="saveTitleBtn">Ок</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <div style="font-size:12px; font-weight:600;">Звуковые эффекты</div>
+              <div style="font-size:10.5px; color:var(--text-muted);">Озвучка сделок, ремонта и кликов</div>
+            </div>
+            <div class="toggle-switch on" id="soundToggleSwitch">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <div style="font-size:12px; font-weight:600;">Компактные карточки авто</div>
+              <div style="font-size:10.5px; color:var(--text-muted);">Скрывать полоски узлов в Магазине до осмотра</div>
+            </div>
+            <div class="toggle-switch" id="compactModeSwitch">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <div style="font-size:12px; font-weight:600;">Авто-кофе при усталости</div>
+              <div style="font-size:10.5px; color:var(--text-muted);">Автопокупка кофе при бодрости ниже 8 ⚡</div>
+            </div>
+            <div class="toggle-switch" id="autoCoffeeSwitch">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-title">Промокоды «Ремонт и Навар»</div>
+            <div class="card-subtitle">Коды поддержки: <strong>NAVAR</strong>, <strong>GARAGE</strong>, <strong>PEREKUP</strong></div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="promoCodeInput" class="input-field" placeholder="Введи промокод..." />
+            <button class="btn btn-primary" id="applyPromoBtn">Активировать</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Сохранение прогресса</div>
+          <div class="grid-2">
+            <button class="btn btn-secondary" id="exportSaveBtn">Скопировать сейв</button>
+            <button class="btn btn-danger" id="resetSaveBtn">Сбросить игру</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Модальное окно интерактивного торга у капота -->
+    <div class="modal-backdrop" id="bargainModal">
+      <div class="modal-window">
+        <div class="card-header">
+          <div>
+            <div class="card-title" id="bargainModalTitle">Торг у капота</div>
+            <div class="card-subtitle" id="bargainSellerTrait">Продавец: Собственник</div>
+          </div>
+          <button class="btn btn-secondary" id="closeBargainModalBtn" style="padding:5px 9px;">✕</button>
+        </div>
+
+        <div class="nodes-grid" style="grid-template-columns:1fr;">
+          <div class="node-cell">
+            <div class="node-label">
+              <span>Терпение продавца</span>
+              <span id="bargainPatienceLabel">100%</span>
+            </div>
+            <div class="node-bar">
+              <div class="node-fill" id="bargainPatienceBar" style="width:100%; background:var(--accent);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:baseline;">
+          <span style="font-size:11.5px; color:var(--text-muted);">Текущая цена продавца:</span>
+          <span class="car-price" id="bargainCurrentPrice">0.00 ₽</span>
+        </div>
+
+        <div id="bargainReplyBox" class="log-row" style="font-style:italic; color:var(--text-muted);">
+          «Машина на бодром ходу, предлагай свои аргументы!»
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:6px;" id="bargainArgsContainer">
+          <button class="btn btn-secondary" data-barg="defects">🔍 Указать на найденные дефекты при осмотре</button>
+          <button class="btn btn-secondary" data-barg="autoteka">📄 Предъявить компромат из Автотеки</button>
+          <button class="btn btn-warn" data-barg="cash">💵 Давить наличкой прямо сейчас («Деньги на капот»)</button>
+          <button class="btn btn-soft" data-barg="polite">🤝 Попросить скидку на бензин и страховку</button>
+        </div>
+
+        <button class="btn btn-primary btn-large" id="bargainBuyNowBtn">Забрать по этой цене</button>
+      </div>
+    </div>
+
+    <!-- Модальное окно подтверждения сброса сохранения (без системного confirm) -->
+    <div class="modal-backdrop" id="confirmResetModal">
+      <div class="modal-window">
+        <div class="card-title">Сбросить прогресс карьеры?</div>
+        <div class="card-subtitle">
+          Все купленные машины, оборудование и деньги будут обнулены, и ты начнешь путь заново со 115 000 ₽.
+        </div>
+        <div class="grid-2">
+          <button class="btn btn-secondary" id="cancelResetModalBtn">Отмена</button>
+          <button class="btn btn-danger" id="confirmResetModalBtn">Да, сбросить</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Нижняя панель навигации -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-tab="tab-home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Главная</span>
+      </button>
+
+      <button class="nav-btn" data-tab="tab-market">
+        <span class="nav-badge" id="marketCountBadge">0</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span>Магазин</span>
+      </button>
+
+      <button class="nav-btn" data-tab="tab-garage">
+        <span class="nav-badge" id="garageCountBadge">0</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+        </svg>
+        <span>Гараж</span>
+      </button>
+
+      <button class="nav-btn" data-tab="tab-business">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="20" x2="12" y2="10"></line>
+          <line x1="18" y1="20" x2="18" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="16"></line>
+        </svg>
+        <span>Бизнес</span>
+      </button>
+
+      <button class="nav-btn" data-tab="tab-settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Настройки</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const STORAGE_KEY = "REMONT_I_NAVAR_SAVE_V4";
+
+      // Расширенный каталог из 35 реальных моделей автомобилей РФ
+      const CAR_CATALOG = [
+        { model: "ВАЗ 11113 Ока 0.8", brand: "ВАЗ", engine: 0.8, basePrice: 68000, tier: "АвтоВАЗ", color: "#38bdf8", bodyStyle: "hatch" },
+        { model: "ВАЗ 2107 Инжектор 1.6", brand: "ВАЗ", engine: 1.6, basePrice: 112000, tier: "АвтоВАЗ", color: "#ef4444", bodyStyle: "sedan" },
+        { model: "ВАЗ 21099 Спутник 1.5", brand: "ВАЗ", engine: 1.5, basePrice: 128000, tier: "АвтоВАЗ", color: "#94a3b8", bodyStyle: "sedan" },
+        { model: "Daewoo Nexia 1.5", brand: "Daewoo", engine: 1.5, basePrice: 142000, tier: "Эконом", color: "#eab308", bodyStyle: "sedan" },
+        { model: "ВАЗ 2114 Самара 1.6", brand: "ВАЗ", engine: 1.6, basePrice: 168000, tier: "АвтоВАЗ", color: "#64748b", bodyStyle: "hatch" },
+        { model: "Lada Kalina I 1.6", brand: "Lada", engine: 1.6, basePrice: 215000, tier: "АвтоВАЗ", color: "#f97316", bodyStyle: "hatch" },
+        { model: "Lada Priora 1.6 16v", brand: "Lada", engine: 1.6, basePrice: 275000, tier: "АвтоВАЗ", color: "#94a3b8", bodyStyle: "sedan" },
+        { model: "Renault Logan I 1.6", brand: "Renault", engine: 1.6, basePrice: 295000, tier: "Эконом", color: "#38bdf8", bodyStyle: "sedan" },
+        { model: "Chevrolet Lacetti 1.6", brand: "Chevrolet", engine: 1.6, basePrice: 350000, tier: "Эконом", color: "#2dd4bf", bodyStyle: "hatch" },
+        { model: "Mitsubishi Lancer IX 1.6", brand: "Mitsubishi", engine: 1.6, basePrice: 415000, tier: "Комфорт", color: "#f43f5e", bodyStyle: "sedan" },
+        { model: "Ford Focus II Рест 1.8", brand: "Ford", engine: 1.8, basePrice: 445000, tier: "Комфорт", color: "#60a5fa", bodyStyle: "hatch" },
+        { model: "Lada Granta FL 1.6", brand: "Lada", engine: 1.6, basePrice: 570000, tier: "Бюджет", color: "#f97316", bodyStyle: "sedan" },
+        { model: "Hyundai Solaris I 1.6", brand: "Hyundai", engine: 1.6, basePrice: 695000, tier: "Бюджет", color: "#38bdf8", bodyStyle: "sedan" },
+        { model: "Kia Rio III 1.6", brand: "Kia", engine: 1.6, basePrice: 730000, tier: "Бюджет", color: "#fb7185", bodyStyle: "sedan" },
+        { model: "Volkswagen Polo Sedan 1.6", brand: "Volkswagen", engine: 1.6, basePrice: 750000, tier: "Бюджет", color: "#94a3b8", bodyStyle: "sedan" },
+        { model: "Lada Vesta SW Cross 1.8", brand: "Lada", engine: 1.8, basePrice: 895000, tier: "Комфорт", color: "#f59e0b", bodyStyle: "suv" },
+        { model: "Renault Duster 2.0 4WD", brand: "Renault", engine: 2.0, basePrice: 980000, tier: "Кроссовер", color: "#84cc16", bodyStyle: "suv" },
+        { model: "Skoda Octavia A7 1.8 TSI", brand: "Skoda", engine: 1.8, basePrice: 1090000, tier: "Комфорт", color: "#10b981", bodyStyle: "sedan" },
+        { model: "Toyota Corolla E160 1.6", brand: "Toyota", engine: 1.6, basePrice: 1160000, tier: "Комфорт", color: "#cbd5e1", bodyStyle: "sedan" },
+        { model: "Mazda 3 BM 2.0 SkyActiv", brand: "Mazda", engine: 2.0, basePrice: 1290000, tier: "Спорт", color: "#ef4444", bodyStyle: "hatch" },
+        { model: "Honda Accord VIII 2.4", brand: "Honda", engine: 2.4, basePrice: 1390000, tier: "Спорт", color: "#818cf8", bodyStyle: "sedan" },
+        { model: "Toyota Mark II JZX100 2.5", brand: "Toyota", engine: 2.5, basePrice: 1580000, tier: "Легенда", color: "#22d3ee", bodyStyle: "coupe" },
+        { model: "Subaru Impreza WRX 2.5", brand: "Subaru", engine: 2.5, basePrice: 1790000, tier: "Спорт", color: "#3b82f6", bodyStyle: "sedan" },
+        { model: "Kia Optima IV 2.4", brand: "Kia", engine: 2.4, basePrice: 1860000, tier: "Бизнес", color: "#94a3b8", bodyStyle: "sedan" },
+        { model: "Toyota Camry XV55 2.5", brand: "Toyota", engine: 2.5, basePrice: 2180000, tier: "Бизнес", color: "#64748b", bodyStyle: "sedan" },
+        { model: "Mazda CX-5 II 2.5 AWD", brand: "Mazda", engine: 2.5, basePrice: 2390000, tier: "Кроссовер", color: "#dc2626", bodyStyle: "suv" },
+        { model: "BMW 320i F30 M-Sport 2.0", brand: "BMW", engine: 2.0, basePrice: 2520000, tier: "Премиум", color: "#38bdf8", bodyStyle: "coupe" },
+        { model: "Audi A6 C7 2.8 Quattro", brand: "Audi", engine: 2.8, basePrice: 2620000, tier: "Бизнес", color: "#94a3b8", bodyStyle: "sedan" },
+        { model: "Mercedes-Benz E200 W212 2.0", brand: "Mercedes", engine: 2.0, basePrice: 2690000, tier: "Бизнес", color: "#c084fc", bodyStyle: "sedan" },
+        { model: "Toyota Camry XV70 3.5 V6", brand: "Toyota", engine: 3.5, basePrice: 3290000, tier: "Бизнес", color: "#eab308", bodyStyle: "sedan" },
+        { model: "BMW 530d G30 xDrive 3.0", brand: "BMW", engine: 3.0, basePrice: 4780000, tier: "Премиум", color: "#60a5fa", bodyStyle: "sedan" },
+        { model: "Toyota Land Cruiser 200 4.5d", brand: "Toyota", engine: 4.5, basePrice: 5850000, tier: "Внедорожник", color: "#9ca3af", bodyStyle: "suv" },
+        { model: "BMW M4 F82 Competition 3.0", brand: "BMW", engine: 3.0, basePrice: 6250000, tier: "Спорткар", color: "#facc15", bodyStyle: "coupe" },
+        { model: "Porsche Cayenne S 3.6", brand: "Porsche", engine: 3.6, basePrice: 6900000, tier: "Люкс", color: "#fb923c", bodyStyle: "suv" },
+        { model: "Mercedes-AMG G63 Гелик 4.0", brand: "Mercedes", engine: 4.0, basePrice: 12900000, tier: "Люкс", color: "#10b981", bodyStyle: "suv" }
+      ];
+
+      const DEFECT_POOL = [
+        { id: "rust_sills", name: "Коррозия порогов", node: "body", penalty: 0.08, costFactor: 0.048 },
+        { id: "putty_pillar", name: "Шпаклевка 1800 мкм", node: "body", penalty: 0.10, costFactor: 0.056 },
+        { id: "cracked_bumper", name: "Трещина бампера и фары", node: "body", penalty: 0.06, costFactor: 0.034 },
+        { id: "oil_burn", name: "Залегли маслосъемные кольца", node: "engine", penalty: 0.12, costFactor: 0.072 },
+        { id: "timing_chain", name: "Растянута цепь ГРМ", node: "engine", penalty: 0.08, costFactor: 0.046 },
+        { id: "gearbox_jerk", name: "Пинки гидроблока КПП", node: "engine", penalty: 0.13, costFactor: 0.078 },
+        { id: "steering_rack", name: "Течь рулевой рейки", node: "susp", penalty: 0.07, costFactor: 0.040 },
+        { id: "shocks_dead", name: "Вытекли передние стойки", node: "susp", penalty: 0.06, costFactor: 0.034 },
+        { id: "torn_seats", name: "Затерт руль и боковина кресла", node: "interior", penalty: 0.05, costFactor: 0.026 },
+        { id: "ac_dead", name: "Заклинил компрессор климата", node: "interior", penalty: 0.06, costFactor: 0.034 }
+      ];
+
+      const AUTOTEKA_STATUSES = [
+        { code: "clean", text: "Зеленый отчёт: без ДТП и залогов, родной пробег", bonus: 0.06, tagClass: "accent" },
+        { code: "minor_dtp", text: "1 мелкое ДТП (расчет 25 тыс. ₽), без залогов", bonus: -0.04, tagClass: "warn" },
+        { code: "rolled_odo", text: "Скручен пробег в истории техосмотров (-90 тыс. км)", bonus: -0.10, tagClass: "danger" },
+        { code: "taxi", text: "Числилась в реестре такси, 4+ владельца", bonus: -0.13, tagClass: "danger" }
+      ];
+
+      const MARKET_TRENDS = [
+        { id: "stable", name: "📊 Стабильный рынок (100%)", sellMult: 1.0, repairMult: 1.0, vaziMult: 1.0 },
+        { id: "spring_boom", name: "📈 Весенний спрос (+12% к ценам)", sellMult: 1.12, repairMult: 1.0, vaziMult: 1.05 },
+        { id: "high_rate", name: "📉 Дорогие автокредиты (-10% спрос)", sellMult: 0.90, repairMult: 1.0, vaziMult: 0.95 },
+        { id: "parts_crisis", name: "🔧 Дефицит запчастей (+22% ремонт)", sellMult: 1.03, repairMult: 1.22, vaziMult: 1.0 },
+        { id: "budget_hunt", name: "🔥 Охота за бюджетками (+16% АвтоВАЗ)", sellMult: 1.02, repairMult: 1.0, vaziMult: 1.16 }
+      ];
+
+      const REGIONS_DATA = [
+        {
+          id: "reg_tver",
+          name: "Тверская область",
+          tripCost: 6500,
+          energyCost: 22,
+          desc: "Поиск живых бюджеток и АвтоВАЗ у дедушек в областях",
+          tiers: ["АвтоВАЗ", "Эконом"],
+          discountPct: 0.22
+        },
+        {
+          id: "reg_krasnodar",
+          name: "Краснодарский край",
+          tripCost: 19000,
+          energyCost: 30,
+          desc: "Машины с юга без московских реагентов и ржавчины",
+          tiers: ["Бюджет", "Комфорт"],
+          discountPct: 0.20
+        },
+        {
+          id: "reg_nsk",
+          name: "Новосибирск и Сибирь",
+          tripCost: 42000,
+          energyCost: 40,
+          desc: "Японская классика, Маркообразные и надежные кроссоверы",
+          tiers: ["Легенда", "Спорт", "Кроссовер"],
+          discountPct: 0.21
+        },
+        {
+          id: "reg_msc_vip",
+          name: "Закрытый аукцион дилеров (Москва)",
+          tripCost: 95000,
+          energyCost: 35,
+          desc: "Трейд-ин бизнес-класса, немецких спорткаров и внедорожников",
+          tiers: ["Бизнес", "Премиум", "Внедорожник", "Спорткар", "Люкс"],
+          discountPct: 0.19
+        }
+      ];
+
+      const BUYER_ARCHETYPES = [
+        { name: "Руслан (Быстрый выкуп)", multMin: 0.85, multMax: 0.93, comment: "Заберу сразу за наличные без лишних проверок." },
+        { name: "Михаил (Автоподборщик)", multMin: 0.95, multMax: 1.05, comment: "Ищем честный автомобиль для клиента, проверили толщиномером." },
+        { name: "Денис (Покупка для себя)", multMin: 0.99, multMax: 1.12, comment: "Давно искал эту модель в живом состоянии!" },
+        { name: "Сергей Петрович (В семью)", multMin: 1.02, multMax: 1.15, comment: "Машина обслужена по уму, готов оформлять договор." }
+      ];
+
+      const UPGRADE_DEFINITIONS = [
+        {
+          id: "thickness_gauge",
+          name: "Толщиномер R&D ET-700 + Сканер OBD2",
+          baseCost: 22000,
+          costMult: 1.8,
+          desc: "+90 ₽ к выезду, скидка 20% на диагностику и +6% к успеху торга",
+          effectText: (lvl) => `Ур. ${lvl}`
+        },
+        {
+          id: "garage_hoist",
+          name: "Двухстоечный подъемник и стенд",
+          baseCost: 48000,
+          costMult: 1.85,
+          desc: "Снижает стоимость ремонта в гараже на 11% за уровень",
+          effectText: (lvl) => `Ур. ${lvl} (-${Math.min(55, lvl * 11)}%)`
+        },
+        {
+          id: "detailing_box",
+          name: "Пост детейлинга и керамики",
+          baseCost: 72000,
+          costMult: 1.9,
+          desc: "Повышает итоговую рыночную цену всех авто на +5% за уровень",
+          effectText: (lvl) => `Ур. ${lvl} (+${lvl * 5}%)`
+        },
+        {
+          id: "auto_scout",
+          name: "Агентская сеть автоподбора",
+          baseCost: 64000,
+          costMult: 1.85,
+          desc: "Приносит ежедневный доход от комиссионных подборов (+4 200 ₽/день за ур.)",
+          effectText: (lvl) => `Ур. ${lvl} (+${(lvl * 4200).toLocaleString("ru-RU")} ₽/дн)`
+        }
+      ];
+
+      const ACHIEVEMENTS_CATALOG = [
+        { id: "ach_first_flip", title: "Первая сделка", desc: "Продай свой первый автомобиль", check: (s) => s.stats.totalSold >= 1 },
+        { id: "ach_bargain_master", title: "Гроза Продавцов", desc: "Успешно сбей цену на торге 5 раз", check: (s) => (s.stats.bargainsWon || 0) >= 5 },
+        { id: "ach_scrap_yard", title: "Авторазборщик", desc: "Пусти хотя бы 1 машину в распил на запчасти", check: (s) => (s.stats.carsScrapped || 0) >= 1 },
+        { id: "ach_millionaire", title: "Первый Миллион", desc: "Накопи на балансе 1 000 000 ₽", check: (s) => s.balance >= 1000000 },
+        { id: "ach_fleet_5", title: "Серьезный Гараж", desc: "Расширь вместимость гаража до 5 боксов", check: (s) => s.garageCapacity >= 5 }
+      ];
+
+      const PROMO_CODES = {
+        NAVAR: { money: 25000, rep: 4, title: "Промокод NAVAR: +25 000 ₽ и +4 ★" },
+        GARAGE: { money: 18000, rep: 3, title: "Промокод GARAGE: +18 000 ₽ и +3 ★" },
+        PEREKUP: { money: 15000, rep: 3, title: "Промокод PEREKUP: +15 000 ₽ и +3 ★" }
+      };
+
+      class SoundFX {
+        constructor() {
+          this.ctx = null;
+          this.enabled = true;
+        }
+        init() {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+          }
+        }
+        play(type) {
+          if (!this.enabled) return;
+          try {
+            this.init();
+            if (!this.ctx) return;
+            if (this.ctx.state === "suspended") this.ctx.resume();
+
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            if (type === "coin") {
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(580, now);
+              osc.frequency.setValueAtTime(860, now + 0.05);
+              gain.gain.setValueAtTime(0.05, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+              osc.start(now);
+              osc.stop(now + 0.15);
+            } else if (type === "buy") {
+              osc.type = "triangle";
+              osc.frequency.setValueAtTime(440, now);
+              osc.frequency.setValueAtTime(660, now + 0.1);
+              gain.gain.setValueAtTime(0.08, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+              osc.start(now);
+              osc.stop(now + 0.24);
+            } else if (type === "repair") {
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(320, now);
+              osc.frequency.linearRampToValueAtTime(480, now + 0.12);
+              gain.gain.setValueAtTime(0.05, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+              osc.start(now);
+              osc.stop(now + 0.15);
+            } else if (type === "sell") {
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(523, now);
+              osc.frequency.setValueAtTime(784, now + 0.12);
+              osc.frequency.setValueAtTime(1046, now + 0.22);
+              gain.gain.setValueAtTime(0.08, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+              osc.start(now);
+              osc.stop(now + 0.35);
+            } else if (type === "error") {
+              osc.type = "sawtooth";
+              osc.frequency.setValueAtTime(160, now);
+              gain.gain.setValueAtTime(0.06, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+              osc.start(now);
+              osc.stop(now + 0.18);
+            }
+          } catch (e) {}
+        }
+      }
+
+      const sfx = new SoundFX();
+
+      function createDefaultQuests() {
+        return [
+          { id: "q_buy", title: "Купи первый автомобиль на рынке", progress: 0, target: 1, rewardMoney: 10000, rewardRep: 3, claimed: false },
+          { id: "q_fix", title: "Выполни 3 ремонта узлов или дефектов", progress: 0, target: 3, rewardMoney: 15000, rewardRep: 4, claimed: false },
+          { id: "q_bargain", title: "Успешно сбей цену на торге 3 раза", progress: 0, target: 3, rewardMoney: 14000, rewardRep: 4, claimed: false },
+          { id: "q_sell", title: "Продай 2 машины с чистым наваром", progress: 0, target: 2, rewardMoney: 28000, rewardRep: 7, claimed: false }
+        ];
+      }
+
+      function createDefaultClientOrders() {
+        return [
+          {
+            id: "ord_1",
+            clientName: "Таксопарк «Сити»",
+            reqTitle: "Бюджетный авто (АвтоВАЗ / Эконом / Бюджет) от 78% сост.",
+            minCond: 78,
+            allowedTiers: ["АвтоВАЗ", "Эконом", "Бюджет"],
+            bonusPct: 0.20,
+            repReward: 5
+          },
+          {
+            id: "ord_2",
+            clientName: "Максим (Частный заказ)",
+            reqTitle: "Любой автомобиль с мотором от 1.8 л в состоянии 85%+",
+            minCond: 85,
+            minEngine: 1.8,
+            bonusPct: 0.22,
+            repReward: 7
+          }
+        ];
+      }
+
+      function createDefaultState() {
+        return {
+          balance: 115000.00, // Честный хардкорный старт: 115 000 ₽
+          reputation: 10,
+          energy: 100,
+          maxEnergy: 100,
+          day: 1,
+          dayTickSeconds: 0,
+          coffeesToday: 0,
+          garageCapacity: 2,
+          partsQuality: "standard", // budget | standard | oem
+          sparePartsStock: 0, // Запчасти с разборки
+          bankDeposit: 0,
+          bankLoan: 0,
+          marketTrendId: "stable",
+          theme: "graphite",
+          customGarageTitle: "Ремонт и Навар",
+          compactCards: false,
+          autoCoffee: false,
+          usedPromos: [],
+          unlockedAchievements: [],
+          stats: {
+            totalBought: 0,
+            totalSold: 0,
+            totalProfit: 0.00,
+            totalClicks: 0,
+            bargainsWon: 0,
+            carsScrapped: 0
+          },
+          upgrades: {
+            thickness_gauge: 0,
+            garage_hoist: 0,
+            detailing_box: 0,
+            auto_scout: 0
+          },
+          quests: createDefaultQuests(),
+          clientOrders: createDefaultClientOrders(),
+          auctionLot: null,
+          marketCars: [],
+          garageCars: [],
+          logs: [],
+          soundEnabled: true,
+          logFilter: "all",
+          combo: 1.0,
+          lastClickTime: 0,
+          inspectCooldownUntil: 0,
+          shiftCooldownUntil: 0,
+          openWorkshops: {}
+        };
+      }
+
+      let state = createDefaultState();
+      let activeSalesTimers = {};
+      let activeBargainCarId = null;
+
+      function formatRub(amount) {
+        const sign = amount < 0 ? "-" : "";
+        const abs = Math.abs(Number(amount) || 0);
+        const parts = abs.toFixed(2).split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return `${sign}${parts[0]}.${parts[1]} ₽`;
+      }
+
+      function getNowTimeStr() {
+        return new Date().toTimeString().slice(0, 8);
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function randomChoice(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      function getCurrentTrend() {
+        return MARKET_TRENDS.find((t) => t.id === state.marketTrendId) || MARKET_TRENDS[0];
+      }
+
+      // Расчет рыночной стоимости автомобиля с учетом состояния, качества деталей, тюнинга и тренда рынка
+      function calculateMarketValue(car) {
+        const avgCond = (car.engineCond + car.bodyCond + car.suspCond + car.interiorCond) / 400;
+        const condFactor = 0.43 + Math.pow(avgCond, 1.38) * 0.95;
+
+        let defectPenalty = 0;
+        car.defects.forEach((d) => {
+          defectPenalty += d.penalty;
+        });
+
+        const autotekaFactor = 1 + (car.autoteka ? car.autoteka.bonus : 0);
+        const detailingUpgradeBonus = 1 + (state.upgrades.detailing_box || 0) * 0.05;
+        const preSaleBonus = car.preSalePrepared ? 1.09 : 1.0;
+
+        // Бонус за тюнинг
+        let tuningBonus = 1.0;
+        if (car.tunedWheels) tuningBonus += 0.06;
+        if (car.tunedAudio) tuningBonus += 0.05;
+        if (car.tunedStage) tuningBonus += 0.08;
+
+        // Модификатор качества установленных при ремонте запчастей
+        const partsMod = car.oemRepaired ? 1.08 : car.budgetRepaired ? 0.94 : 1.0;
+
+        // Тренд рынка
+        const trend = getCurrentTrend();
+        const tierMult = car.tier === "АвтоВАЗ" || car.tier === "Эконом" ? trend.vaziMult : 1.0;
+
+        const repBonus = 1 + Math.min(0.25, state.reputation * 0.0016);
+        const mileageFactor = Math.max(0.75, 1.06 - (car.mileage / 450000));
+
+        const raw =
+          car.basePrice *
+          condFactor *
+          Math.max(0.50, 1 - defectPenalty) *
+          autotekaFactor *
+          detailingUpgradeBonus *
+          preSaleBonus *
+          tuningBonus *
+          partsMod *
+          trend.sellMult *
+          tierMult *
+          repBonus *
+          mileageFactor;
+
+        return Math.max(28000, Number(raw.toFixed(2)));
+      }
+
+      function generateCarListing(forceTemplate = null, isHotDeal = false, customCondRange = null) {
+        const template = forceTemplate || randomChoice(CAR_CATALOG);
+        const year = template.basePrice < 300000 ? randomInt(2004, 2013) : template.basePrice < 1200000 ? randomInt(2012, 2019) : randomInt(2016, 2023);
+        const mileage = randomInt(64000, 290000);
+        const owners = randomInt(1, 5);
+
+        const cMin = customCondRange ? customCondRange[0] : 38;
+        const cMax = customCondRange ? customCondRange[1] : 82;
+
+        const engineCond = randomInt(cMin, cMax);
+        const bodyCond = randomInt(cMin, cMax);
+        const suspCond = randomInt(cMin, cMax);
+        const interiorCond = randomInt(Math.min(90, cMin + 10), Math.min(94, cMax + 8));
+
+        const shuffled = [...DEFECT_POOL].sort(() => Math.random() - 0.5);
+        const defectCount = (engineCond + bodyCond) / 2 > 75 ? 1 : randomInt(2, 3);
+        const chosenDefects = shuffled.slice(0, defectCount).map((d, idx) => ({
+          ...d,
+          fixCost: Math.max(3000, Math.round((template.basePrice * d.costFactor) / 100) * 100),
+          revealed: idx === 0
+        }));
+
+        const autotekaObj = randomChoice(AUTOTEKA_STATUSES);
+        const sellerTraits = [
+          { name: "Собственник (Спокойный)", patienceDecay: 28, flex: 1.0 },
+          { name: "Дед Михалыч (Упрямый)", patienceDecay: 38, flex: 0.75 },
+          { name: "Срочная продажа (Переезд)", patienceDecay: 24, flex: 1.35 },
+          { name: "Перекуп Валера (Хитрый)", patienceDecay: 34, flex: 0.85 }
+        ];
+        const trait = randomChoice(sellerTraits);
+
+        const car = {
+          id: "car_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+          model: template.model,
+          brand: template.brand,
+          engine: template.engine,
+          basePrice: template.basePrice,
+          tier: template.tier,
+          color: template.color,
+          bodyStyle: template.bodyStyle,
+          year,
+          mileage,
+          owners,
+          engineCond,
+          bodyCond,
+          suspCond,
+          interiorCond,
+          defects: chosenDefects,
+          autoteka: autotekaObj,
+          autotekaChecked: false,
+          inspected: false,
+          bargained: false,
+          patience: 100,
+          sellerTrait: trait,
+          sellerName: trait.name,
+          usedBargainArgs: [],
+          preSalePrepared: false,
+          tunedWheels: false,
+          tunedAudio: false,
+          tunedStage: false,
+          oemRepaired: false,
+          budgetRepaired: false,
+          isHotDeal: Boolean(isHotDeal)
+        };
+
+        const fairVal = calculateMarketValue(car);
+        const priceFactor = isHotDeal ? (0.74 + Math.random() * 0.11) : (0.86 + Math.random() * 0.17);
+        car.price = Number((Math.round((fairVal * priceFactor) / 500) * 500).toFixed(2));
+        return car;
+      }
+
+      function generateAuctionLot() {
+        const maxBase = Math.max(280000, state.balance * 2.4);
+        const pool = CAR_CATALOG.filter((c) => c.basePrice <= maxBase);
+        const tpl = randomChoice(pool.length ? pool : CAR_CATALOG.slice(0, 8));
+        const lotCar = generateCarListing(tpl, true, [35, 85]);
+        const startBid = Math.round((lotCar.price * 0.74) / 1000) * 1000;
+        state.auctionLot = {
+          car: lotCar,
+          currentBid: startBid
+        };
+      }
+
+      function seedInitialMarket() {
+        const starterModels = [
+          "ВАЗ 11113 Ока 0.8",
+          "ВАЗ 2107 Инжектор 1.6",
+          "ВАЗ 21099 Спутник 1.5",
+          "Daewoo Nexia 1.5",
+          "ВАЗ 2114 Самара 1.6",
+          "Lada Priora 1.6 16v",
+          "Renault Logan I 1.6",
+          "Ford Focus II Рест 1.8",
+          "Hyundai Solaris I 1.6",
+          "Toyota Mark II JZX100 2.5",
+          "Toyota Camry XV55 2.5",
+          "BMW 320i F30 M-Sport 2.0"
+        ];
+
+        state.marketCars = starterModels.map((mName, idx) => {
+          const tpl = CAR_CATALOG.find((c) => c.model === mName) || CAR_CATALOG[0];
+          const car = generateCarListing(tpl, idx === 0 || idx === 1);
+
+          // Настраиваем первые машины под честный стартовый бюджет 115 000 ₽
+          if (mName === "ВАЗ 11113 Ока 0.8") {
+            car.price = 48000.00;
+            car.engineCond = 60;
+            car.bodyCond = 52;
+            car.suspCond = 56;
+            car.interiorCond = 62;
+          } else if (mName === "ВАЗ 2107 Инжектор 1.6") {
+            car.price = 79000.00;
+            car.engineCond = 62;
+            car.bodyCond = 54;
+            car.suspCond = 58;
+            car.interiorCond = 65;
+          } else if (mName === "ВАЗ 21099 Спутник 1.5") {
+            car.price = 96000.00;
+            car.engineCond = 64;
+            car.bodyCond = 53;
+            car.suspCond = 60;
+            car.interiorCond = 64;
+          } else if (mName === "Daewoo Nexia 1.5") {
+            car.price = 109000.00;
+            car.engineCond = 65;
+            car.bodyCond = 52;
+            car.suspCond = 60;
+            car.interiorCond = 63;
+          } else if (mName === "ВАЗ 2114 Самара 1.6") {
+            car.price = 126000.00; // Чуть выше стартового бюджета — нужно сбить цену на торге!
+            car.engineCond = 66;
+            car.bodyCond = 58;
+            car.suspCond = 62;
+            car.interiorCond = 68;
+          }
+          return car;
+        });
+
+        if (!state.auctionLot) generateAuctionLot();
+      }
+
+      function applyTheme(themeName) {
+        state.theme = themeName || "graphite";
+        document.body.setAttribute("data-theme", state.theme);
+        document.querySelectorAll("#themeSelectorGrid .theme-card").forEach((card) => {
+          card.classList.toggle("active", card.dataset.settheme === state.theme);
+        });
+      }
+
+      function saveState() {
+        try {
+          const clean = {
+            ...state,
+            garageCars: state.garageCars.map((c) => ({
+              ...c,
+              isSelling: false,
+              sellProgress: 0
+            }))
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+        } catch (e) {}
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            seedInitialMarket();
+            addLog("deal", "Добро пожаловать в «Ремонт и Навар PRO»! Стартовый бюджет: 115 000.00 ₽.");
+            addLog("work", "Экономика честная: ищи Оку, ВАЗ 2107 или торгуйся за ВАЗ 2114 Самару в «Магазине»!");
+            applyTheme("graphite");
+            saveState();
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          state = {
+            ...createDefaultState(),
+            ...parsed,
+            stats: { ...createDefaultState().stats, ...(parsed.stats || {}) },
+            upgrades: { ...createDefaultState().upgrades, ...(parsed.upgrades || {}) },
+            openWorkshops: parsed.openWorkshops || {}
+          };
+          if (!Array.isArray(state.marketCars) || state.marketCars.length === 0) {
+            seedInitialMarket();
+          }
+          if (!state.auctionLot) generateAuctionLot();
+          sfx.enabled = state.soundEnabled !== false;
+          applyTheme(state.theme || "graphite");
+        } catch (e) {
+          seedInitialMarket();
+        }
+      }
+
+      function addLog(category, message) {
+        state.logs.unshift({
+          id: "log_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          time: getNowTimeStr(),
+          category,
+          message
+        });
+        if (state.logs.length > 80) state.logs.pop();
+        renderTerminal();
+        saveState();
+      }
+
+      function showToast(message, type = "ok") {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = "toast" + (type === "error" ? " error" : type === "warn" ? " warn" : "");
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transition = "opacity 0.2s ease";
+          setTimeout(() => toast.remove(), 200);
+        }, 2500);
+      }
+
+      function modifyBalance(delta) {
+        state.balance = Number((state.balance + delta).toFixed(2));
+        const el = document.getElementById("balanceDisplay");
+        el.textContent = formatRub(state.balance);
+        el.classList.remove("flash-up", "flash-down");
+        void el.offsetWidth;
+        el.classList.add(delta >= 0 ? "flash-up" : "flash-down");
+        setTimeout(() => el.classList.remove("flash-up", "flash-down"), 180);
+        checkAchievements();
+      }
+
+      function checkAchievements() {
+        ACHIEVEMENTS_CATALOG.forEach((ach) => {
+          if (!state.unlockedAchievements.includes(ach.id) && ach.check(state)) {
+            state.unlockedAchievements.push(ach.id);
+            state.reputation += 3;
+            showToast(`🏆 Достижение: ${ach.title} (+3 ★)!`);
+            addLog("deal", `Открыто достижение «${ach.title}» (+3 ★ репутации)!`);
+          }
+        });
+      }
+
+      function updateQuestProgress(questId, amount = 1) {
+        const q = state.quests.find((item) => item.id === questId);
+        if (!q || q.claimed) return;
+        q.progress = Math.min(q.target, q.progress + amount);
+      }
+
+      function getReputationRank(rep) {
+        if (rep < 25) return { title: "Гаражный новичок", next: 25, prev: 0 };
+        if (rep < 60) return { title: "Уличный перекуп", next: 60, prev: 25 };
+        if (rep < 130) return { title: "Мастер Подбора", next: 130, prev: 60 };
+        if (rep < 260) return { title: "Авторитет Рынка", next: 260, prev: 130 };
+        return { title: "Владелец Автосетей", next: 600, prev: 260 };
+      }
+
+      function getCarSvg(color, bodyStyle) {
+        if (bodyStyle === "suv") {
+          return `
+            <svg width="58" height="32" viewBox="0 0 80 44" fill="none">
+              <path d="M9 28 L15 13 L53 13 L65 22 L73 24 L73 34 L8 34 Z" fill="${color}"/>
+              <path d="M18 15 L50 15 L59 23 L15 23 Z" fill="rgba(0,0,0,0.45)"/>
+              <circle cx="22" cy="34" r="6" fill="#18181b" stroke="#cbd5e1" stroke-width="2"/>
+              <circle cx="58" cy="34" r="6" fill="#18181b" stroke="#cbd5e1" stroke-width="2"/>
+            </svg>`;
+        }
+        return `
+          <svg width="58" height="32" viewBox="0 0 80 44" fill="none">
+            <path d="M8 28 L20 16 L52 16 L63 25 L73 26 L73 34 L7 34 Z" fill="${color}"/>
+            <path d="M22 18 L50 18 L59 25 L17 25 Z" fill="rgba(0,0,0,0.45)"/>
+            <circle cx="21" cy="34" r="5.8" fill="#18181b" stroke="#cbd5e1" stroke-width="2"/>
+            <circle cx="58" cy="34" r="5.8" fill="#18181b" stroke="#cbd5e1" stroke-width="2"/>
+          </svg>`;
+      }
+
+      function getConditionColor(val) {
+        if (val < 45) return "var(--danger)";
+        if (val < 75) return "var(--warn)";
+        return "var(--accent)";
+      }
+
+      function getCoffeeCost() {
+        return 1400 + (state.coffeesToday || 0) * 350;
+      }
+
+      function getDailyUpkeep() {
+        return state.garageCapacity * 1600 + state.garageCars.length * 400;
+      }
+
+      function renderHeaderAndStats() {
+        const titleText = state.customGarageTitle || "Ремонт и Навар";
+        document.getElementById("playerGarageTitle").textContent = titleText;
+        document.getElementById("statusTitleDisplay").textContent = `День ${state.day} • Ремонт и Навар`;
+
+        document.getElementById("balanceDisplay").textContent = formatRub(state.balance);
+        document.getElementById("repValueDisplay").textContent = state.reputation;
+
+        const rankObj = getReputationRank(state.reputation);
+        document.getElementById("repRankDisplay").textContent = rankObj.title;
+        document.getElementById("repNextDisplay").textContent = `${state.reputation} / ${rankObj.next} ★`;
+        const repPct = Math.min(100, Math.max(5, ((state.reputation - rankObj.prev) / (rankObj.next - rankObj.prev)) * 100));
+        document.getElementById("repBarFill").style.width = `${repPct}%`;
+
+        document.getElementById("energyValueDisplay").textContent = `${Math.floor(state.energy)} / ${state.maxEnergy} ⚡`;
+        document.getElementById("energyBarFill").style.width = `${(state.energy / state.maxEnergy) * 100}%`;
+
+        const dailyAgencyIncome = (state.upgrades.auto_scout || 0) * 4200;
+        document.getElementById("passiveIncomeBadge").textContent = `+${dailyAgencyIncome.toLocaleString("ru-RU")} ₽/дн`;
+
+        const trend = getCurrentTrend();
+        document.getElementById("marketTrendBadge").textContent = trend.name;
+        document.getElementById("dailyUpkeepBadge").textContent = `Расход: -${getDailyUpkeep().toLocaleString("ru-RU")} ₽/дн`;
+
+        // Кнопка основного заработка (сбалансированная!)
+        const baseClick = 180 + (state.upgrades.thickness_gauge || 0) * 90;
+        const clickEarn = Math.round(baseClick * state.combo);
+        const hustleBtn = document.getElementById("mainHustleBtn");
+        hustleBtn.disabled = state.energy < 6;
+        document.getElementById("mainHustleBtnText").textContent =
+          state.energy < 6
+            ? "Мало бодрости! Перекуси ☕ или отдохни"
+            : `Таксовать / Искать авто (+${clickEarn.toLocaleString("ru-RU")} ₽ • -6 ⚡)`;
+        document.getElementById("comboBadge").textContent = `x${state.combo.toFixed(1)}`;
+
+        const inspectReward = 1900 + state.reputation * 35;
+        const shiftReward = 3600 + (state.upgrades.garage_hoist || 0) * 950;
+        document.getElementById("inspectRewardLabel").textContent = `+${inspectReward.toLocaleString("ru-RU")} ₽`;
+        document.getElementById("shiftRewardLabel").textContent = `+${shiftReward.toLocaleString("ru-RU")} ₽`;
+        document.getElementById("coffeeCostLabel").textContent = `${getCoffeeCost().toLocaleString("ru-RU")} ₽`;
+
+        document.getElementById("statBoughtSold").textContent = `${state.stats.totalBought} / ${state.stats.totalSold}`;
+        const prof = state.stats.totalProfit;
+        const profEl = document.getElementById("statProfit");
+        profEl.textContent = (prof >= 0 ? "+" : "") + formatRub(prof);
+        profEl.style.color = prof >= 0 ? "var(--accent)" : "var(--danger)";
+
+        document.getElementById("statGarageSlots").textContent =
+          `${state.garageCars.length}/${state.garageCapacity} • ${state.sparePartsStock} ЗЧ`;
+        const assetsVal = state.garageCars.reduce((acc, c) => acc + calculateMarketValue(c), 0);
+        document.getElementById("statGarageValue").textContent = formatRub(assetsVal);
+
+        document.getElementById("marketCountBadge").textContent = state.marketCars.length;
+        document.getElementById("garageCountBadge").textContent = `${state.garageCars.length}/${state.garageCapacity}`;
+
+        const expandCost = 85000 + (state.garageCapacity - 2) * 95000;
+        const expandBtn = document.getElementById("expandGarageBtn");
+        expandBtn.textContent = `+1 Бокс (${expandCost.toLocaleString("ru-RU")} ₽)`;
+        expandBtn.disabled = state.balance < expandCost;
+
+        document.getElementById("garageSummarySub").textContent =
+          `Боксы: ${state.garageCars.length}/${state.garageCapacity} • Склад б/у узлов: ${state.sparePartsStock} шт. (скидка 50%)`;
+
+        document.querySelectorAll("#partsQualitySelector .seg-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.partsq === state.partsQuality);
+        });
+
+        document.getElementById("soundToggleSwitch").classList.toggle("on", sfx.enabled);
+        document.getElementById("compactModeSwitch").classList.toggle("on", Boolean(state.compactCards));
+        document.getElementById("autoCoffeeSwitch").classList.toggle("on", Boolean(state.autoCoffee));
+      }
+
+      function renderQuestsAndOrders() {
+        const ordList = document.getElementById("clientOrdersList");
+        ordList.innerHTML = state.clientOrders
+          .map((ord) => {
+            const matchingCar = state.garageCars.find((c) => {
+              const avg = (c.engineCond + c.bodyCond + c.suspCond + c.interiorCond) / 4;
+              if (avg < ord.minCond) return false;
+              if (ord.allowedTiers && !ord.allowedTiers.includes(c.tier)) return false;
+              if (ord.minEngine && c.engine < ord.minEngine) return false;
+              return true;
+            });
+
+            const payout = matchingCar ? Number((calculateMarketValue(matchingCar) * (1 + ord.bonusPct)).toFixed(2)) : 0;
+
+            return `
+              <div class="log-row" style="gap:6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="font-size:12px;">${ord.clientName}</strong>
+                  <span class="tag accent">+${Math.round(ord.bonusPct * 100)}% без налога</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted);">${ord.reqTitle}</div>
+                ${
+                  matchingCar
+                    ? `<button class="btn btn-primary" data-action="fulfill-order" data-orderid="${ord.id}" data-carid="${matchingCar.id}">
+                         Сдать «${matchingCar.model}» за ${formatRub(payout)}
+                       </button>`
+                    : `<div style="font-size:10.5px; color:var(--text-dim);">В гараже пока нет подходящего авто</div>`
+                }
+              </div>
+            `;
+          })
+          .join("");
+
+        const qContainer = document.getElementById("questsList");
+        qContainer.innerHTML = state.quests
+          .map((q) => {
+            const done = q.progress >= q.target;
+            return `
+              <div class="log-row" style="flex-direction:row; align-items:center; justify-content:space-between; gap:10px;">
+                <div>
+                  <div style="font-size:12px; font-weight:600;">${q.title}</div>
+                  <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">
+                    Премия: +${q.rewardMoney.toLocaleString("ru-RU")} ₽ и +${q.rewardRep} ★
+                  </div>
+                </div>
+                <button
+                  class="btn ${done && !q.claimed ? "btn-primary" : "btn-secondary"}"
+                  data-quest="${q.id}"
+                  ${done && !q.claimed ? "" : "disabled"}
+                >
+                  ${q.claimed ? "Получено" : done ? "Забрать" : `${q.progress}/${q.target}`}
+                </button>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function renderTerminal() {
+        const body = document.getElementById("terminalBody");
+        const filtered = state.logs.filter((item) => {
+          if (state.logFilter === "all") return true;
+          if (state.logFilter === "deal") return item.category === "buy" || item.category === "sell" || item.category === "deal";
+          return item.category === state.logFilter;
+        });
+
+        if (!filtered.length) {
+          body.innerHTML = `<div class="empty-box">Записей пока нет</div>`;
+          return;
+        }
+
+        const labels = {
+          buy: "Покупка",
+          sell: "Продажа",
+          deal: "Рынок",
+          repair: "Сервис",
+          work: "Работа",
+          alert: "Важно"
+        };
+
+        body.innerHTML = filtered
+          .map(
+            (item) => `
+            <div class="log-row">
+              <div class="log-meta">
+                <span>${labels[item.category] || "Событие"}</span>
+                <span>${item.time}</span>
+              </div>
+              <div>${item.message}</div>
+            </div>
+          `
+          )
+          .join("");
+      }
+
+      function renderMarket() {
+        const listEl = document.getElementById("marketCarsList");
+        const query = (document.getElementById("marketSearchInput").value || "").trim().toLowerCase();
+        const engineFilter = document.getElementById("engineFilterSelect").value;
+        const sortMode = document.getElementById("sortFilterSelect").value;
+        const minPriceRaw = document.getElementById("minPriceInput").value;
+        const maxPriceRaw = document.getElementById("maxPriceInput").value;
+
+        const minPrice = minPriceRaw !== "" ? parseFloat(minPriceRaw) : null;
+        const maxPrice = maxPriceRaw !== "" ? parseFloat(maxPriceRaw) : null;
+
+        let filtered = state.marketCars.filter((car) => {
+          if (query) {
+            const hay = `${car.model} ${car.brand} ${car.tier} ${car.engine}`.toLowerCase();
+            if (!hay.includes(query)) return false;
+          }
+          if (engineFilter === "small" && !(car.engine >= 0.7 && car.engine <= 1.65)) return false;
+          if (engineFilter === "medium" && !(car.engine >= 1.75 && car.engine <= 2.45)) return false;
+          if (engineFilter === "large" && !(car.engine >= 2.5)) return false;
+
+          if (minPrice !== null && !isNaN(minPrice) && car.price < minPrice) return false;
+          if (maxPrice !== null && !isNaN(maxPrice) && car.price > maxPrice) return false;
+          return true;
+        });
+
+        if (sortMode === "price_asc") filtered.sort((a, b) => a.price - b.price);
+        if (sortMode === "price_desc") filtered.sort((a, b) => b.price - a.price);
+        if (sortMode === "cond_desc") {
+          filtered.sort(
+            (a, b) =>
+              b.engineCond + b.bodyCond + b.suspCond + b.interiorCond -
+              (a.engineCond + a.bodyCond + a.suspCond + a.interiorCond)
+          );
+        }
+
+        if (!filtered.length) {
+          listEl.innerHTML = `<div class="empty-box">По выбранным фильтрам ничего не найдено. Сбрось фильтр или обнови ленту.</div>`;
+        } else {
+          const inspectCost = Math.round(3000 * Math.pow(0.8, state.upgrades.thickness_gauge || 0));
+          const autotekaCost = 1200;
+
+          listEl.innerHTML = filtered
+            .map((car) => {
+              const estMarket = calculateMarketValue(car);
+              const canBuy = state.balance >= car.price && state.garageCars.length < state.garageCapacity;
+              const showNodes = !state.compactCards || car.inspected;
+
+              const defectsHtml = car.defects
+                .map((d) =>
+                  d.revealed || car.inspected
+                    ? `<span class="tag danger">⚠ ${d.name}</span>`
+                    : `<span class="tag warn">? Скрытый дефект</span>`
+                )
+                .join("");
+
+              return `
+                <article class="car-item ${car.isHotDeal ? "hot" : ""}">
+                  <div class="car-row-main">
+                    <div class="car-icon-box">
+                      ${getCarSvg(car.color, car.bodyStyle)}
+                      <span class="car-year-badge">${car.year}</span>
+                    </div>
+                    <div class="car-info-main">
+                      <div class="car-name-row">
+                        <span class="car-name">${car.model}</span>
+                        <span class="tag">${car.engine.toFixed(1)} л</span>
+                        ${car.isHotDeal ? `<span class="tag warn">Срочно</span>` : ""}
+                      </div>
+                      <div class="car-meta-line">
+                        ${car.mileage.toLocaleString("ru-RU")} км • Владельцев: ${car.owners} • ${car.sellerName}
+                      </div>
+                      <div class="car-price-line">
+                        <span class="car-price">${formatRub(car.price)}</span>
+                        <span class="car-market-est">Оценка ~${formatRub(estMarket)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  ${
+                    car.autotekaChecked
+                      ? `<div class="tag ${car.autoteka.tagClass}" style="padding:5px 8px;">📄 ${car.autoteka.text}</div>`
+                      : ""
+                  }
+
+                  ${
+                    showNodes
+                      ? `<div class="nodes-grid">
+                          <div class="node-cell">
+                            <div class="node-label"><span>ДВС и КПП</span><span>${car.engineCond}%</span></div>
+                            <div class="node-bar"><div class="node-fill" style="width:${car.engineCond}%; background:${getConditionColor(car.engineCond)};"></div></div>
+                          </div>
+                          <div class="node-cell">
+                            <div class="node-label"><span>Кузов</span><span>${car.bodyCond}%</span></div>
+                            <div class="node-bar"><div class="node-fill" style="width:${car.bodyCond}%; background:${getConditionColor(car.bodyCond)};"></div></div>
+                          </div>
+                          <div class="node-cell">
+                            <div class="node-label"><span>Ходовая</span><span>${car.suspCond}%</span></div>
+                            <div class="node-bar"><div class="node-fill" style="width:${car.suspCond}%; background:${getConditionColor(car.suspCond)};"></div></div>
+                          </div>
+                          <div class="node-cell">
+                            <div class="node-label"><span>Салон</span><span>${car.interiorCond}%</span></div>
+                            <div class="node-bar"><div class="node-fill" style="width:${car.interiorCond}%; background:${getConditionColor(car.interiorCond)};"></div></div>
+                          </div>
+                        </div>`
+                      : ""
+                  }
+
+                  <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                    ${defectsHtml}
+                  </div>
+
+                  <div class="grid-2" style="gap:7px;">
+                    <button
+                      class="btn btn-secondary"
+                      data-action="autoteka-car"
+                      data-id="${car.id}"
+                      ${car.autotekaChecked || state.balance < autotekaCost ? "disabled" : ""}
+                    >
+                      ${car.autotekaChecked ? "✓ Отчёт" : `Автотека (${autotekaCost} ₽)`}
+                    </button>
+
+                    <button
+                      class="btn btn-secondary"
+                      data-action="inspect-car"
+                      data-id="${car.id}"
+                      ${car.inspected || state.balance < inspectCost ? "disabled" : ""}
+                    >
+                      ${car.inspected ? "✓ Осмотрена" : `Осмотр (${inspectCost} ₽)`}
+                    </button>
+
+                    <button
+                      class="btn btn-warn"
+                      data-action="bargain-car"
+                      data-id="${car.id}"
+                      ${car.patience <= 0 ? "disabled" : ""}
+                    >
+                      ${car.patience <= 0 ? "Торг закрыт" : `Торговаться (${car.patience}%)`}
+                    </button>
+
+                    <button
+                      class="btn btn-primary"
+                      data-action="buy-car"
+                      data-id="${car.id}"
+                      ${canBuy ? "" : "disabled"}
+                    >
+                      ${state.garageCars.length >= state.garageCapacity ? "Нет мест" : "Купить"}
+                    </button>
+                  </div>
+                </article>
+              `;
+            })
+            .join("");
+        }
+
+        // Слепой аукцион
+        const aucEl = document.getElementById("auctionContainer");
+        if (!state.auctionLot) generateAuctionLot();
+        const lot = state.auctionLot;
+        const canBuyLot = state.balance >= lot.currentBid && state.garageCars.length < state.garageCapacity;
+
+        aucEl.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="card-title">Слепой Аукцион Конфиската</div>
+              <div class="card-subtitle">Состояние скрыто до выкупа. Если попадется тотал — пустишь в распил на запчасти!</div>
+            </div>
+            <button class="btn btn-secondary" id="skipAuctionLotBtn" style="padding:6px 10px;">След. (1 000 ₽)</button>
+          </div>
+          <div class="car-row-main" style="background:var(--bg-main); padding:10px; border-radius:12px; border:1px solid var(--border);">
+            <div class="car-icon-box">
+              ${getCarSvg(lot.car.color, lot.car.bodyStyle)}
+              <span class="car-year-badge">${lot.car.year}</span>
+            </div>
+            <div class="car-info-main">
+              <div class="car-name-row">
+                <span class="car-name">${lot.car.model}</span>
+                <span class="tag">${lot.car.engine.toFixed(1)} л</span>
+              </div>
+              <div class="car-meta-line">Пробег ~${lot.car.mileage.toLocaleString("ru-RU")} км • Узлы: неизвестно</div>
+              <div class="car-price-line">
+                <span class="car-price">${formatRub(lot.currentBid)}</span>
+                <span class="car-market-est">База модели ~${formatRub(lot.car.basePrice)}</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-large" id="buyAuctionLotBtn" ${canBuyLot ? "" : "disabled"}>
+            ${state.garageCars.length >= state.garageCapacity ? "В гараже нет свободных боксов" : `Выкупить лот за ${formatRub(lot.currentBid)}`}
+          </button>
+        `;
+
+        // Выезды в регионы
+        const regEl = document.getElementById("regionsList");
+        regEl.innerHTML = REGIONS_DATA.map((r) => {
+          const canGo = state.balance >= r.tripCost && state.energy >= r.energyCost;
+          return `
+            <div class="log-row" style="gap:7px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="font-size:12.5px;">✈️ ${r.name}</strong>
+                <span class="tag info">Дисконт до ${Math.round(r.discountPct * 100)}%</span>
+              </div>
+              <div style="font-size:11px; color:var(--text-muted);">${r.desc}</div>
+              <button class="btn btn-primary" data-action="go-region" data-regid="${r.id}" ${canGo ? "" : "disabled"}>
+                Поехать за авто (${r.tripCost.toLocaleString("ru-RU")} ₽ и -${r.energyCost} ⚡)
+              </button>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Расчет стоимости ремонта с учетом выбранного качества запчастей, тренда рынка и склада ЗЧ
+      function getGarageRepairCosts(car) {
+        const hoistDiscount = Math.min(0.55, (state.upgrades.garage_hoist || 0) * 0.11);
+        const trendMult = getCurrentTrend().repairMult;
+        const qualityMult = state.partsQuality === "budget" ? 0.65 : state.partsQuality === "oem" ? 1.30 : 1.0;
+        const spareDiscount = state.sparePartsStock > 0 ? 0.5 : 1.0;
+
+        const baseUnit = Math.max(4200, car.basePrice * 0.052 * (1 - hoistDiscount) * trendMult * qualityMult * spareDiscount);
+
+        return {
+          engineCost: Math.round((baseUnit * 1.15) / 100) * 100,
+          bodyCost: Math.round((baseUnit * 1.1) / 100) * 100,
+          suspCost: Math.round((baseUnit * 0.85) / 100) * 100,
+          interiorCost: Math.round((baseUnit * 0.65) / 100) * 100,
+          combinedStepCost: Math.round((baseUnit * 1.5) / 100) * 100,
+          detailingCost: Math.round(Math.max(4500, car.basePrice * 0.032) / 100) * 100,
+          wheelsCost: Math.round(Math.max(6000, car.basePrice * 0.04) / 100) * 100,
+          audioCost: Math.round(Math.max(5000, car.basePrice * 0.032) / 100) * 100,
+          stageCost: Math.round(Math.max(8500, car.basePrice * 0.055) / 100) * 100
+        };
+      }
+
+      function renderGarage() {
+        const listEl = document.getElementById("garageCarsList");
+        if (!state.garageCars.length) {
+          listEl.innerHTML = `<div class="empty-box">В гараже пока пусто. Купи автомобиль во вкладке «Магазин», чтобы отремонтировать его, дооснастить или пустить на запчасти!</div>`;
+          return;
+        }
+
+        const hoistDiscount = Math.min(0.55, (state.upgrades.garage_hoist || 0) * 0.11);
+        const spareDiscount = state.sparePartsStock > 0 ? 0.5 : 1.0;
+
+        listEl.innerHTML = state.garageCars
+          .map((car) => {
+            const currentVal = calculateMarketValue(car);
+            const totalSpent = Number((car.purchasePrice + car.investedRepair).toFixed(2));
+            const estProfit = Number((currentVal - totalSpent).toFixed(2));
+            const costs = getGarageRepairCosts(car);
+            const isOpen = Boolean(state.openWorkshops[car.id]);
+
+            const allNodesMax =
+              car.engineCond >= 100 &&
+              car.bodyCond >= 100 &&
+              car.suspCond >= 100 &&
+              car.interiorCond >= 100 &&
+              car.defects.length === 0;
+
+            const scrapCash = Math.round((car.basePrice * 0.28) / 500) * 500;
+
+            const defectsHtml = car.defects.length
+              ? car.defects
+                  .map((d, idx) => {
+                    const fixPrice = Math.round((d.fixCost * (1 - hoistDiscount) * spareDiscount) / 100) * 100;
+                    return `<button
+                      class="btn btn-danger"
+                      style="padding:5px 8px; font-size:10px;"
+                      data-action="fix-single-defect"
+                      data-id="${car.id}"
+                      data-defectidx="${idx}"
+                      ${state.balance < fixPrice || car.isSelling ? "disabled" : ""}
+                    >
+                      🔧 ${d.name} (${fixPrice.toLocaleString("ru-RU")} ₽)
+                    </button>`;
+                  })
+                  .join("")
+              : `<span class="tag accent">✓ Дефектов нет</span>`;
+
+            let saleHtml = "";
+            if (car.isSelling) {
+              saleHtml = `
+                <div class="log-row" style="gap:6px;">
+                  <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:600;">
+                    <span>Публикация объявления и звонки клиентов...</span>
+                    <span>${Math.min(100, Math.round(car.sellProgress || 0))}%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:${Math.min(100, car.sellProgress || 0)}%; background:var(--accent);"></div>
+                  </div>
+                </div>
+              `;
+            } else if (car.currentOffer) {
+              const rawGain = Number((car.currentOffer.offerPrice - totalSpent).toFixed(2));
+              const taxAmount = rawGain > 0 ? Math.round(rawGain * 0.13) : 0;
+              const whiteProfit = Number((rawGain - taxAmount).toFixed(2));
+
+              saleHtml = `
+                <div class="log-row" style="gap:8px; border-color:var(--accent);">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>${car.currentOffer.buyerName}</strong>
+                    <span style="font-size:14px; font-weight:800; color:var(--accent);">${formatRub(car.currentOffer.offerPrice)}</span>
+                  </div>
+                  <div style="font-size:11px; color:var(--text-muted);">«${car.currentOffer.comment}»</div>
+                  <div style="font-size:11px; font-weight:600;">
+                    В белую (налог 13% = ${taxAmount.toLocaleString("ru-RU")} ₽): <strong style="color:${whiteProfit >= 0 ? "var(--accent)" : "var(--danger)"};">${whiteProfit >= 0 ? "+" : ""}${formatRub(whiteProfit)}</strong>
+                  </div>
+                  <div class="grid-2" style="gap:6px;">
+                    <button class="btn btn-primary" data-action="accept-offer-white" data-id="${car.id}">
+                      Полный ДКП (+5 ★)
+                    </button>
+                    <button class="btn btn-purple" data-action="accept-offer-grey" data-id="${car.id}" title="Без налога 13%, но есть риск штрафа ФНС">
+                      Серый ДКП (0% налог)
+                    </button>
+                    <button class="btn btn-warn" data-action="push-buyer" data-id="${car.id}" ${car.currentOffer.pushed ? "disabled" : ""}>
+                      ${car.currentOffer.pushed ? "Без торга" : "Накинуть +7%"}
+                    </button>
+                    <button class="btn btn-secondary" data-action="next-buyer" data-id="${car.id}">
+                      Другой клиент
+                    </button>
+                  </div>
+                </div>
+              `;
+            }
+
+            return `
+              <article class="car-item">
+                <div class="car-row-main">
+                  <div class="car-icon-box">
+                    ${getCarSvg(car.color, car.bodyStyle)}
+                    <span class="car-year-badge">${car.year}</span>
+                  </div>
+                  <div class="car-info-main">
+                    <div class="car-name-row">
+                      <span class="car-name">${car.model}</span>
+                      ${car.preSalePrepared ? `<span class="tag accent">✨ Детейлинг</span>` : ""}
+                      ${car.oemRepaired ? `<span class="tag info">OEM ЗЧ</span>` : ""}
+                      ${car.budgetRepaired ? `<span class="tag warn">Б/У ЗЧ</span>` : ""}
+                    </div>
+                    <div class="car-meta-line">
+                      Взял: ${formatRub(car.purchasePrice)} • Вложено: ${formatRub(car.investedRepair)}
+                    </div>
+                    <div class="car-price-line">
+                      <span class="car-price">${formatRub(currentVal)}</span>
+                      <span style="font-size:11px; font-weight:700; color:${estProfit >= 0 ? "var(--accent)" : "var(--danger)"};">
+                        Маржа: ${estProfit >= 0 ? "+" : ""}${formatRub(estProfit)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="nodes-grid">
+                  <div class="node-cell">
+                    <div class="node-label"><span>ДВС и КПП</span><span>${car.engineCond}%</span></div>
+                    <div class="node-bar"><div class="node-fill" style="width:${car.engineCond}%; background:${getConditionColor(car.engineCond)};"></div></div>
+                  </div>
+                  <div class="node-cell">
+                    <div class="node-label"><span>Кузов</span><span>${car.bodyCond}%</span></div>
+                    <div class="node-bar"><div class="node-fill" style="width:${car.bodyCond}%; background:${getConditionColor(car.bodyCond)};"></div></div>
+                  </div>
+                  <div class="node-cell">
+                    <div class="node-label"><span>Ходовая</span><span>${car.suspCond}%</span></div>
+                    <div class="node-bar"><div class="node-fill" style="width:${car.suspCond}%; background:${getConditionColor(car.suspCond)};"></div></div>
+                  </div>
+                  <div class="node-cell">
+                    <div class="node-label"><span>Салон</span><span>${car.interiorCond}%</span></div>
+                    <div class="node-bar"><div class="node-fill" style="width:${car.interiorCond}%; background:${getConditionColor(car.interiorCond)};"></div></div>
+                  </div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                  ${defectsHtml}
+                </div>
+
+                <div class="grid-2" style="gap:7px;">
+                  <button
+                    class="btn btn-soft"
+                    data-action="repair-car"
+                    data-id="${car.id}"
+                    ${allNodesMax || state.balance < costs.combinedStepCost || car.isSelling ? "disabled" : ""}
+                  >
+                    ${allNodesMax ? "✓ Идеал (100%)" : `Починить (${costs.combinedStepCost.toLocaleString("ru-RU")} ₽)`}
+                  </button>
+
+                  <button
+                    class="btn btn-primary"
+                    data-action="sell-car"
+                    data-id="${car.id}"
+                    ${car.isSelling ? "disabled" : ""}
+                  >
+                    ${car.isSelling ? "Показ..." : "Продать"}
+                  </button>
+                </div>
+
+                <button class="btn btn-secondary" data-action="toggle-workshop" data-id="${car.id}" style="padding:7px;">
+                  ${isOpen ? "▲ Скрыть ремзону, тюнинг и распил" : "▼ Поузловой ремонт, Тюнинг и Распил"}
+                </button>
+
+                <div class="workshop-drawer ${isOpen ? "open" : ""}">
+                  <div style="font-size:10.5px; color:var(--text-muted); font-weight:600;">Ремонт отдельных агрегатов:</div>
+                  <div class="grid-2" style="gap:6px;">
+                    <button
+                      class="btn btn-secondary"
+                      data-action="repair-node"
+                      data-node="engine"
+                      data-id="${car.id}"
+                      ${car.engineCond >= 100 || state.balance < costs.engineCost || car.isSelling ? "disabled" : ""}
+                    >
+                      ДВС (${costs.engineCost.toLocaleString("ru-RU")} ₽)
+                    </button>
+                    <button
+                      class="btn btn-secondary"
+                      data-action="repair-node"
+                      data-node="body"
+                      data-id="${car.id}"
+                      ${car.bodyCond >= 100 || state.balance < costs.bodyCost || car.isSelling ? "disabled" : ""}
+                    >
+                      Кузов (${costs.bodyCost.toLocaleString("ru-RU")} ₽)
+                    </button>
+                    <button
+                      class="btn btn-secondary"
+                      data-action="repair-node"
+                      data-node="susp"
+                      data-id="${car.id}"
+                      ${car.suspCond >= 100 || state.balance < costs.suspCost || car.isSelling ? "disabled" : ""}
+                    >
+                      Ходовая (${costs.suspCost.toLocaleString("ru-RU")} ₽)
+                    </button>
+                    <button
+                      class="btn btn-secondary"
+                      data-action="repair-node"
+                      data-node="interior"
+                      data-id="${car.id}"
+                      ${car.interiorCond >= 100 || state.balance < costs.interiorCost || car.isSelling ? "disabled" : ""}
+                    >
+                      Салон (${costs.interiorCost.toLocaleString("ru-RU")} ₽)
+                    </button>
+                  </div>
+
+                  <div style="font-size:10.5px; color:var(--text-muted); font-weight:600; margin-top:2px;">Дооснащение и Тюнинг:</div>
+                  <div class="grid-3">
+                    <button
+                      class="btn btn-purple"
+                      style="font-size:10px; padding:6px 4px;"
+                      data-action="tune-car"
+                      data-tune="wheels"
+                      data-id="${car.id}"
+                      ${car.tunedWheels || state.balance < costs.wheelsCost || car.isSelling ? "disabled" : ""}
+                    >
+                      ${car.tunedWheels ? "✓ Диски" : `🛞 Диски (${(costs.wheelsCost / 1000).toFixed(0)}к)`}
+                    </button>
+                    <button
+                      class="btn btn-purple"
+                      style="font-size:10px; padding:6px 4px;"
+                      data-action="tune-car"
+                      data-tune="audio"
+                      data-id="${car.id}"
+                      ${car.tunedAudio || state.balance < costs.audioCost || car.isSelling ? "disabled" : ""}
+                    >
+                      ${car.tunedAudio ? "✓ Музыка" : `🔊 Саб (${(costs.audioCost / 1000).toFixed(0)}к)`}
+                    </button>
+                    <button
+                      class="btn btn-purple"
+                      style="font-size:10px; padding:6px 4px;"
+                      data-action="tune-car"
+                      data-tune="stage"
+                      data-id="${car.id}"
+                      ${car.tunedStage || state.balance < costs.stageCost || car.isSelling ? "disabled" : ""}
+                    >
+                      ${car.tunedStage ? "✓ Stage 1" : `⚡ Чип (${(costs.stageCost / 1000).toFixed(0)}к)`}
+                    </button>
+                  </div>
+
+                  <button
+                    class="btn btn-warn"
+                    data-action="detailing-car"
+                    data-id="${car.id}"
+                    ${car.preSalePrepared || state.balance < costs.detailingCost || car.isSelling ? "disabled" : ""}
+                  >
+                    ${car.preSalePrepared ? "✨ Химчистка и полировка сделаны (+9%)" : `✨ Предпродажный детейлинг (+9% • ${costs.detailingCost.toLocaleString("ru-RU")} ₽)`}
+                  </button>
+
+                  <button
+                    class="btn btn-danger"
+                    data-action="scrap-car"
+                    data-id="${car.id}"
+                    ${car.isSelling ? "disabled" : ""}
+                  >
+                    ⚙️ Пустить в распил на запчасти (+${scrapCash.toLocaleString("ru-RU")} ₽ и +3 узла на склад)
+                  </button>
+                </div>
+
+                ${saleHtml}
+              </article>
+            `;
+          })
+          .join("");
+      }
+
+      function renderBusiness() {
+        const upContainer = document.getElementById("upgradesList");
+        upContainer.innerHTML = UPGRADE_DEFINITIONS.map((u) => {
+          const lvl = state.upgrades[u.id] || 0;
+          const cost = Math.round((u.baseCost * Math.pow(u.costMult, lvl)) / 100) * 100;
+          const canAfford = state.balance >= cost;
+          return `
+            <div class="log-row" style="flex-direction:row; align-items:center; justify-content:space-between; gap:10px; padding:11px;">
+              <div style="flex:1;">
+                <div style="font-size:12px; font-weight:700;">
+                  ${u.name} <span class="tag accent" style="margin-left:4px;">${u.effectText(lvl)}</span>
+                </div>
+                <div style="font-size:10.5px; color:var(--text-muted); margin-top:3px;">${u.desc}</div>
+              </div>
+              <button class="btn btn-primary" data-upgrade="${u.id}" ${canAfford ? "" : "disabled"}>
+                ${cost.toLocaleString("ru-RU")} ₽
+              </button>
+            </div>
+          `;
+        }).join("");
+
+        // Банк
+        document.getElementById("bankDepositDisplay").textContent = formatRub(state.bankDeposit);
+        document.getElementById("bankLoanDisplay").textContent = formatRub(state.bankLoan);
+        document.getElementById("depositAddBtn").disabled = state.balance < 25000;
+        document.getElementById("depositWithdrawBtn").disabled = state.bankDeposit <= 0;
+        document.getElementById("loanTakeBtn").disabled = state.bankLoan >= 300000;
+        document.getElementById("loanRepayBtn").disabled = state.bankLoan <= 0 || state.balance < Math.min(50000, state.bankLoan);
+
+        // Достижения
+        const achContainer = document.getElementById("achievementsList");
+        achContainer.innerHTML = ACHIEVEMENTS_CATALOG.map((a) => {
+          const unlocked = state.unlockedAchievements.includes(a.id);
+          return `
+            <div class="log-row" style="flex-direction:row; align-items:center; justify-content:space-between; opacity:${unlocked ? "1" : "0.55"};">
+              <div>
+                <div style="font-size:12px; font-weight:700;">${unlocked ? "🏆" : "🔒"} ${a.title}</div>
+                <div style="font-size:10.5px; color:var(--text-muted);">${a.desc}</div>
+              </div>
+              <span class="tag ${unlocked ? "accent" : ""}">${unlocked ? "Открыто" : "Закрыто"}</span>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function renderAll() {
+        renderHeaderAndStats();
+        renderQuestsAndOrders();
+        renderTerminal();
+        renderMarket();
+        renderGarage();
+        renderBusiness();
+      }
+
+      // Проверка по базе Автотека
+      function checkAutoteka(carId) {
+        const car = state.marketCars.find((c) => c.id === carId);
+        if (!car || car.autotekaChecked) return;
+        const cost = 1200;
+        if (state.balance < cost) {
+          sfx.play("error");
+          showToast("Не хватает 1 200 ₽ на отчёт Автотеки", "error");
+          return;
+        }
+        modifyBalance(-cost);
+        car.autotekaChecked = true;
+        sfx.play("coin");
+        addLog("deal", `Отчёт Автотеки по ${car.model}: ${car.autoteka.text}.`);
+        showToast(car.autoteka.text);
+        renderAll();
+        saveState();
+      }
+
+      // Выездной осмотр машины
+      function inspectMarketCar(carId) {
+        const car = state.marketCars.find((c) => c.id === carId);
+        if (!car || car.inspected) return;
+        const inspectCost = Math.round(3000 * Math.pow(0.8, state.upgrades.thickness_gauge || 0));
+        if (state.balance < inspectCost) {
+          sfx.play("error");
+          showToast("Недостаточно средств на осмотр", "error");
+          return;
+        }
+        modifyBalance(-inspectCost);
+        car.inspected = true;
+        car.defects.forEach((d) => (d.revealed = true));
+        sfx.play("coin");
+        addLog("deal", `Осмотрена ${car.model}: выявлено дефектов — ${car.defects.length} шт.`);
+        showToast(`Осмотр завершен: раскрыты все дефекты ${car.model}`);
+        renderAll();
+        saveState();
+      }
+
+      // Открытие интерактивного окна торга
+      function openBargainModal(carId) {
+        const car = state.marketCars.find((c) => c.id === carId);
+        if (!car) return;
+        activeBargainCarId = carId;
+        updateBargainModalUI();
+        document.getElementById("bargainModal").classList.add("open");
+      }
+
+      function updateBargainModalUI(replyText = null) {
+        const car = state.marketCars.find((c) => c.id === activeBargainCarId);
+        if (!car) {
+          document.getElementById("bargainModal").classList.remove("open");
+          return;
+        }
+        document.getElementById("bargainModalTitle").textContent = `Торг: ${car.model}`;
+        document.getElementById("bargainSellerTrait").textContent = `Продавец: ${car.sellerName}`;
+        document.getElementById("bargainPatienceLabel").textContent = `${car.patience}%`;
+        document.getElementById("bargainPatienceBar").style.width = `${car.patience}%`;
+        document.getElementById("bargainPatienceBar").style.background = getConditionColor(car.patience);
+        document.getElementById("bargainCurrentPrice").textContent = formatRub(car.price);
+
+        if (replyText) {
+          document.getElementById("bargainReplyBox").textContent = replyText;
+        }
+
+        const used = car.usedBargainArgs || [];
+        document.querySelectorAll("#bargainArgsContainer [data-barg]").forEach((btn) => {
+          const arg = btn.dataset.barg;
+          btn.disabled = car.patience <= 0 || used.includes(arg);
+        });
+
+        const buyBtn = document.getElementById("bargainBuyNowBtn");
+        buyBtn.disabled = state.balance < car.price || state.garageCars.length >= state.garageCapacity;
+        buyBtn.textContent =
+          state.garageCars.length >= state.garageCapacity
+            ? "Нет мест в гараже"
+            : `Забрать по ДКП за ${formatRub(car.price)}`;
+      }
+
+      function executeBargainStep(argType) {
+        const car = state.marketCars.find((c) => c.id === activeBargainCarId);
+        if (!car || car.patience <= 0) return;
+        if (!car.usedBargainArgs) car.usedBargainArgs = [];
+        if (car.usedBargainArgs.includes(argType)) return;
+
+        car.usedBargainArgs.push(argType);
+        const traitFlex = car.sellerTrait ? car.sellerTrait.flex : 1.0;
+        const baseDecay = car.sellerTrait ? car.sellerTrait.patienceDecay : 30;
+        const gaugeBonus = (state.upgrades.thickness_gauge || 0) * 0.04;
+
+        let discPct = 0;
+        let patienceLoss = baseDecay;
+        let reply = "";
+
+        if (argType === "defects") {
+          if (!car.inspected) {
+            patienceLoss = 35;
+            reply = "«Ты её даже на подъемнике не смотрел! Не выдумывай болячки!» (Нужен Осмотр)";
+            sfx.play("error");
+          } else {
+            discPct = (0.04 + car.defects.length * 0.025 + gaugeBonus) * traitFlex;
+            patienceLoss = 25;
+            reply = `«Ладно, по технике согласен, на запчасти уступлю!»`;
+            sfx.play("coin");
+          }
+        } else if (argType === "autoteka") {
+          if (!car.autotekaChecked) {
+            patienceLoss = 30;
+            reply = "«Какая ещё Автотека? У тебя даже отчёта на руках нет!»";
+            sfx.play("error");
+          } else if (car.autoteka.bonus < 0) {
+            discPct = (0.09 + gaugeBonus) * traitFlex;
+            patienceLoss = 22;
+            reply = "«Эх, пробил всё-таки базу... Ладно, скину за историю ПТС.»";
+            sfx.play("coin");
+          } else {
+            patienceLoss = 20;
+            reply = "«Сам видишь — Автотека кристалльно зелёная! За это не скину.»";
+            sfx.play("error");
+          }
+        } else if (argType === "cash") {
+          patienceLoss = 42;
+          if (Math.random() < 0.62 * traitFlex) {
+            discPct = 0.065 * traitFlex;
+            reply = "«Деньги сразу без кредитов? Хорошо, давай по рукам со скидкой!»";
+            sfx.play("coin");
+          } else {
+            reply = "«Не дави на меня! За копейки я её перекупам не отдам.»";
+            sfx.play("error");
+          }
+        } else if (argType === "polite") {
+          patienceLoss = 18;
+          discPct = 0.032 * traitFlex;
+          reply = "«На полный бак и страховку скину по-братски, не вопрос.»";
+          sfx.play("coin");
+        }
+
+        car.patience = Math.max(0, car.patience - patienceLoss);
+
+        if (discPct > 0) {
+          const discount = Math.max(1500, Math.round((car.price * discPct) / 500) * 500);
+          car.price = Math.max(25000, Number((car.price - discount).toFixed(2)));
+          state.stats.bargainsWon = (state.stats.bargainsWon || 0) + 1;
+          updateQuestProgress("q_bargain", 1);
+          addLog("deal", `Торг по ${car.model}: цена снижена на ${formatRub(discount)}.`);
+          reply += ` (-${formatRub(discount)})`;
+        }
+
+        if (car.patience <= 0 && discPct === 0) {
+          reply = "«Всё, разговор окончен! Цена окончательная, торга больше нет.»";
+        }
+
+        updateBargainModalUI(reply);
+        renderAll();
+        saveState();
+      }
+
+      function buyMarketCar(carId) {
+        const idx = state.marketCars.findIndex((c) => c.id === carId);
+        if (idx === -1) return;
+        const car = state.marketCars[idx];
+
+        if (state.garageCars.length >= state.garageCapacity) {
+          sfx.play("error");
+          showToast("В гараже нет свободных боксов!", "error");
+          return;
+        }
+        if (state.balance < car.price) {
+          sfx.play("error");
+          showToast("Недостаточно денег для покупки", "error");
+          return;
+        }
+
+        modifyBalance(-car.price);
+        state.marketCars.splice(idx, 1);
+
+        state.garageCars.unshift({
+          ...car,
+          autotekaChecked: true,
+          defects: car.defects.map((d) => ({ ...d, revealed: true })),
+          purchasePrice: car.price,
+          investedRepair: 0.00,
+          isSelling: false,
+          sellProgress: 0,
+          currentOffer: null
+        });
+
+        state.stats.totalBought += 1;
+        state.reputation += 2;
+        updateQuestProgress("q_buy", 1);
+        sfx.play("buy");
+
+        addLog("buy", `Куплена ${car.model} (${car.year} г.) за ${formatRub(car.price)}.`);
+        showToast(`Куплена ${car.model}!`);
+
+        document.getElementById("bargainModal").classList.remove("open");
+        if (state.marketCars.length < 8) state.marketCars.push(generateCarListing());
+        renderAll();
+        saveState();
+      }
+
+      function fixSingleDefect(carId, defectIdx) {
+        const car = state.garageCars.find((c) => c.id === carId);
+        if (!car || car.isSelling) return;
+        const defect = car.defects[defectIdx];
+        if (!defect) return;
+
+        const hoistDiscount = Math.min(0.55, (state.upgrades.garage_hoist || 0) * 0.11);
+        const usedSpare = state.sparePartsStock > 0;
+        const spareDiscount = usedSpare ? 0.5 : 1.0;
+        const fixPrice = Math.round((defect.fixCost * (1 - hoistDiscount) * spareDiscount) / 100) * 100;
+
+        if (state.balance < fixPrice) {
+          sfx.play("error");
+          showToast("Недостаточно средств на устранение дефекта", "error");
+          return;
+        }
+
+        modifyBalance(-fixPrice);
+        if (usedSpare) state.sparePartsStock -= 1;
+        car.investedRepair = Number((car.investedRepair + fixPrice).toFixed(2));
+        car.defects.splice(defectIdx, 1);
+
+        if (defect.node === "engine") car.engineCond = Math.min(100, car.engineCond + 7);
+        if (defect.node === "body") car.bodyCond = Math.min(100, car.bodyCond + 7);
+        if (defect.node === "susp") car.suspCond = Math.min(100, car.suspCond + 7);
+        if (defect.node === "interior") car.interiorCond = Math.min(100, car.interiorCond + 7);
+
+        car.currentOffer = null;
+        updateQuestProgress("q_fix", 1);
+        sfx.play("repair");
+        addLog("repair", `Устранен дефект «${defect.name}» на ${car.model} (-${formatRub(fixPrice)}).`);
+        showToast(`Устранено: ${defect.name}`);
+        renderAll();
+        saveState();
+      }
+
+      function repairGarageCar(carId, node = "combined") {
+        const car = state.garageCars.find((c) => c.id === carId);
+        if (!car || car.isSelling) return;
+
+        const costs = getGarageRepairCosts(car);
+        let cost = costs.combinedStepCost;
+        if (node === "engine") cost = costs.engineCost;
+        if (node === "body") cost = costs.bodyCost;
+        if (node === "susp") cost = costs.suspCost;
+        if (node === "interior") cost = costs.interiorCost;
+
+        if (state.balance < cost) {
+          sfx.play("error");
+          showToast(`Не хватает средств (${formatRub(cost)})`, "error");
+          return;
+        }
+
+        const oldVal = calculateMarketValue(car);
+        modifyBalance(-cost);
+        if (state.sparePartsStock > 0) state.sparePartsStock -= 1;
+        car.investedRepair = Number((car.investedRepair + cost).toFixed(2));
+
+        // Фиксируем тип использованных запчастей
+        if (state.partsQuality === "oem") {
+          car.oemRepaired = true;
+          car.budgetRepaired = false;
+        } else if (state.partsQuality === "budget") {
+          car.budgetRepaired = true;
+          car.oemRepaired = false;
+        }
+
+        const gainMult = state.partsQuality === "budget" ? 0.78 : state.partsQuality === "oem" ? 1.15 : 1.0;
+
+        if (node === "engine") {
+          car.engineCond = Math.min(100, car.engineCond + Math.round(20 * gainMult));
+          const idx = car.defects.findIndex((d) => d.node === "engine");
+          if (idx !== -1) car.defects.splice(idx, 1);
+        } else if (node === "body") {
+          car.bodyCond = Math.min(100, car.bodyCond + Math.round(20 * gainMult));
+          const idx = car.defects.findIndex((d) => d.node === "body");
+          if (idx !== -1) car.defects.splice(idx, 1);
+        } else if (node === "susp") {
+          car.suspCond = Math.min(100, car.suspCond + Math.round(22 * gainMult));
+          const idx = car.defects.findIndex((d) => d.node === "susp");
+          if (idx !== -1) car.defects.splice(idx, 1);
+        } else if (node === "interior") {
+          car.interiorCond = Math.min(100, car.interiorCond + Math.round(24 * gainMult));
+          const idx = car.defects.findIndex((d) => d.node === "interior");
+          if (idx !== -1) car.defects.splice(idx, 1);
+        } else {
+          car.engineCond = Math.min(100, car.engineCond + Math.round(16 * gainMult));
+          car.bodyCond = Math.min(100, car.bodyCond + Math.round(16 * gainMult));
+          car.suspCond = Math.min(100, car.suspCond + Math.round(18 * gainMult));
+          car.interiorCond = Math.min(100, car.interiorCond + Math.round(18 * gainMult));
+          if (car.defects.length > 0) car.defects.shift();
+        }
+
+        car.currentOffer = null;
+        updateQuestProgress("q_fix", 1);
+        const newVal = calculateMarketValue(car);
+        sfx.play("repair");
+
+        addLog("repair", `Ремонт ${car.model} (-${formatRub(cost)}). Оценка выросла на +${formatRub(newVal - oldVal)}.`);
+        showToast(`Отремонтировано! Оценка: ${formatRub(newVal)}`);
+        renderAll();
+        saveState();
+      }
+
+      // Тюнинг автомобиля в Гараже
+      function tuneGarageCar(carId, tuneType) {
+        const car = state.garageCars.find((c) => c.id === carId);
+        if (!car || car.isSelling) return;
+        const costs = getGarageRepairCosts(car);
+
+        let cost = 0;
+        let label = "";
+        if (tuneType === "wheels" && !car.tunedWheels) {
+          cost = costs.wheelsCost;
+          label = "Литые диски и новая резина";
+        } else if (tuneType === "audio" && !car.tunedAudio) {
+          cost = costs.audioCost;
+          label = "Андроид-магнитола и сабвуфер";
+        } else if (tuneType === "stage" && !car.tunedStage) {
+          cost = costs.stageCost;
+          label = "Чип-тюнинг Stage 1";
+        } else {
+          return;
+        }
+
+        if (state.balance < cost) {
+          sfx.play("error");
+          showToast("Недостаточно средств на тюнинг", "error");
+          return;
+        }
+
+        modifyBalance(-cost);
+        car.investedRepair = Number((car.investedRepair + cost).toFixed(2));
+        if (tuneType === "wheels") car.tunedWheels = true;
+        if (tuneType === "audio") car.tunedAudio = true;
+        if (tuneType === "stage") car.tunedStage = true;
+        car.currentOffer = null;
+
+        sfx.play("repair");
+        addLog("repair", `На ${car.model} установлено: ${label} (-${formatRub(cost)}).`);
+        showToast(`Установлено: ${label}!`);
+        renderAll();
+        saveState();
+      }
+
+      // Разборка машины в распил на запчасти
+      function scrapGarageCar(carId) {
+        const idx = state.garageCars.findIndex((c) => c.id === carId);
+        if (idx === -1) return;
+        const car = state.garageCars[idx];
+        const scrapCash = Math.round((car.basePrice * 0.28) / 500) * 500;
+
+        modifyBalance(scrapCash);
+        state.sparePartsStock += 3;
+        state.stats.carsScrapped = (state.stats.carsScrapped || 0) + 1;
+        state.garageCars.splice(idx, 1);
+        delete state.openWorkshops[carId];
+
+        sfx.play("repair");
+        addLog("repair", `Распил ${car.model}: получено +${formatRub(scrapCash)} за металл и +3 узла на склад запчастей.`);
+        showToast(`Машина разобрана! +${formatRub(scrapCash)} и +3 ЗЧ на склад`);
+        checkAchievements();
+        renderAll();
+        saveState();
+      }
+
+      function performDetailing(carId) {
+        const car = state.garageCars.find((c) => c.id === carId);
+        if (!car || car.preSalePrepared || car.isSelling) return;
+        const costs = getGarageRepairCosts(car);
+        if (state.balance < costs.detailingCost) {
+          sfx.play("error");
+          showToast("Недостаточно средств на детейлинг", "error");
+          return;
+        }
+        modifyBalance(-costs.detailingCost);
+        car.investedRepair = Number((car.investedRepair + costs.detailingCost).toFixed(2));
+        car.preSalePrepared = true;
+        car.bodyCond = Math.min(100, car.bodyCond + 8);
+        car.interiorCond = Math.min(100, car.interiorCond + 10);
+        car.currentOffer = null;
+        sfx.play("repair");
+        addLog("repair", `Выполнен предпродажный детейлинг ${car.model} (-${formatRub(costs.detailingCost)}).`);
+        showToast("Химчистка и полировка выполнены!");
+        renderAll();
+        saveState();
+      }
+
+      function createBuyerOffer(car) {
+        const marketVal = calculateMarketValue(car);
+        const buyer = randomChoice(BUYER_ARCHETYPES);
+        const mult = buyer.multMin + Math.random() * (buyer.multMax - buyer.multMin);
+        const offerPrice = Math.round((marketVal * mult) / 500) * 500;
+        return {
+          buyerName: buyer.name,
+          comment: buyer.comment,
+          offerPrice,
+          pushed: false
+        };
+      }
+
+      function startSellingCar(carId) {
+        const car = state.garageCars.find((c) => c.id === carId);
+        if (!car || car.isSelling) return;
+
+        car.isSelling = true;
+        car.sellProgress = 0;
+        car.currentOffer = null;
+        renderGarage();
+
+        if (activeSalesTimers[carId]) clearInterval(activeSalesTimers[carId]);
+
+        activeSalesTimers[carId] = setInterval(() => {
+          const target = state.garageCars.find((c) => c.id === carId);
+          if (!target) {
+            clearInterval(activeSalesTimers[carId]);
+            return;
+          }
+          target.sellProgress += 25;
+          if (target.sellProgress >= 100) {
+            clearInterval(activeSalesTimers[carId]);
+            delete activeSalesTimers[carId];
+            target.isSelling = false;
+            target.sellProgress = 0;
+            target.currentOffer = createBuyerOffer(target);
+            sfx.play("coin");
+            addLog("deal", `Покупатель ${target.currentOffer.buyerName} предложил ${formatRub(target.currentOffer.offerPrice)} за ${target.model}.`);
+            showToast(`Найден покупатель на ${target.model}!`);
+          }
+          renderGarage();
+        }, 240);
+      }
+
+      function pushBuyerPrice(carId) {
+        const car = state.garageCars.find((c) => c.id === carId);
+        if (!car || !car.currentOffer || car.currentOffer.pushed) return;
+
+        car.currentOffer.pushed = true;
+        const chance = 0.54 + Math.min(0.25, state.reputation * 0.002);
+        if (Math.random() <= chance) {
+          const extra = Math.round((car.currentOffer.offerPrice * 0.07) / 500) * 500;
+          car.currentOffer.offerPrice += extra;
+          sfx.play("coin");
+          addLog("deal", `Покупатель согласился доплатить +${formatRub(extra)} за ${car.model}!`);
+          showToast(`Покупатель накинул +${formatRub(extra)}!`);
+        } else {
+          sfx.play("error");
+          addLog("alert", `Покупатель отказался от доплаты за ${car.model} и уехал.`);
+          car.currentOffer = null;
+          showToast("Покупатель уехал! Запусти поиск снова.", "warn");
+        }
+        renderGarage();
+        saveState();
+      }
+
+      function finalizeCarSale(carId, isGreyScheme = false) {
+        const idx = state.garageCars.findIndex((c) => c.id === carId);
+        if (idx === -1) return;
+        const car = state.garageCars[idx];
+        const offer = car.currentOffer || createBuyerOffer(car);
+
+        const totalInvested = Number((car.purchasePrice + car.investedRepair).toFixed(2));
+        const rawProfit = Number((offer.offerPrice - totalInvested).toFixed(2));
+
+        let tax = 0;
+        let repDelta = 5;
+
+        if (!isGreyScheme) {
+          if (rawProfit > 0) tax = Math.round(rawProfit * 0.13);
+          repDelta = 5;
+        } else {
+          // Серый ДКП (занижение суммы): налог 0, но 22% шанс проверки и штрафа
+          if (Math.random() < 0.22 && rawProfit > 0) {
+            tax = Math.round(rawProfit * 0.30) + 5000;
+            repDelta = -3;
+            addLog("alert", `ФНС выявила занижение суммы в ДКП по ${car.model}! Начислен штраф ${formatRub(tax)}.`);
+            showToast(`Штраф за серый ДКП: -${formatRub(tax)}!`, "error");
+          } else {
+            repDelta = 1;
+          }
+        }
+
+        const netProfit = Number((rawProfit - tax).toFixed(2));
+        modifyBalance(offer.offerPrice - tax);
+        state.garageCars.splice(idx, 1);
+        delete state.openWorkshops[carId];
+        state.stats.totalSold += 1;
+        state.stats.totalProfit = Number((state.stats.totalProfit + netProfit).toFixed(2));
+        state.reputation = Math.max(1, state.reputation + repDelta);
+
+        if (netProfit > 0) {
+          updateQuestProgress("q_sell", 1);
+          sfx.play("sell");
+          addLog("sell", `Продана ${car.model} за ${formatRub(offer.offerPrice)}. Чистый навар: +${formatRub(netProfit)}!`);
+          showToast(`Продано! Чистый навар: +${formatRub(netProfit)}`);
+        } else {
+          sfx.play("buy");
+          addLog("alert", `Продана ${car.model} в минус (${formatRub(netProfit)}).`);
+          showToast(`Продано (${formatRub(netProfit)})`, "warn");
+        }
+
+        checkAchievements();
+        if (state.marketCars.length < 10) state.marketCars.unshift(generateCarListing());
+        renderAll();
+        saveState();
+      }
+
+      function switchTab(tabId) {
+        document.querySelectorAll(".tab-section").forEach((sec) => {
+          sec.classList.toggle("active", sec.id === tabId);
+        });
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.tab === tabId);
+        });
+      }
+
+      function buyEnergyRefill(silent = false) {
+        const cost = getCoffeeCost();
+        if (state.balance < cost) {
+          if (!silent) {
+            sfx.play("error");
+            showToast(`Не хватает ${cost.toLocaleString("ru-RU")} ₽ на кофе и шаурму`, "error");
+          }
+          return false;
+        }
+        if (state.energy >= state.maxEnergy) {
+          if (!silent) showToast("Бодрость уже полная!");
+          return false;
+        }
+        modifyBalance(-cost);
+        state.coffeesToday = (state.coffeesToday || 0) + 1;
+        state.energy = Math.min(state.maxEnergy, state.energy + 40);
+        if (!silent) {
+          sfx.play("coin");
+          showToast("Бодрость +40 ⚡");
+        }
+        addLog("work", `Перекус с кофе (-${formatRub(cost)}): восстановлено +40 ⚡ бодрости.`);
+        renderAll();
+        saveState();
+        return true;
+      }
+
+      function bindEvents() {
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+        });
+
+        document.getElementById("homeSegments").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-homeseg]");
+          if (!btn) return;
+          const targetId = btn.dataset.homeseg;
+          document.querySelectorAll("#homeSegments .seg-btn").forEach((b) => b.classList.toggle("active", b === btn));
+          document.querySelectorAll("#tab-home .subview").forEach((sv) => sv.classList.toggle("active", sv.id === targetId));
+        });
+
+        document.getElementById("marketSegments").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-marketseg]");
+          if (!btn) return;
+          const targetId = btn.dataset.marketseg;
+          document.querySelectorAll("#marketSegments .seg-btn").forEach((b) => b.classList.toggle("active", b === btn));
+          document.querySelectorAll("#tab-market .subview").forEach((sv) => sv.classList.toggle("active", sv.id === targetId));
+        });
+
+        document.getElementById("businessSegments").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-bizseg]");
+          if (!btn) return;
+          const targetId = btn.dataset.bizseg;
+          document.querySelectorAll("#businessSegments .seg-btn").forEach((b) => b.classList.toggle("active", b === btn));
+          document.querySelectorAll("#tab-business .subview").forEach((sv) => sv.classList.toggle("active", sv.id === targetId));
+        });
+
+        document.getElementById("partsQualitySelector").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-partsq]");
+          if (!btn) return;
+          state.partsQuality = btn.dataset.partsq;
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("toggleFiltersBtn").addEventListener("click", () => {
+          const box = document.getElementById("advancedFiltersBox");
+          box.style.display = box.style.display === "none" ? "flex" : "none";
+        });
+
+        document.getElementById("quickCoffeeBtn").addEventListener("click", () => buyEnergyRefill(false));
+        document.getElementById("buyShawarmaBtn").addEventListener("click", () => buyEnergyRefill(false));
+
+        // Основной заработок
+        document.getElementById("mainHustleBtn").addEventListener("click", () => {
+          if (state.energy < 6 && state.autoCoffee) {
+            buyEnergyRefill(true);
+          }
+          if (state.energy < 6) {
+            sfx.play("error");
+            showToast("Мало бодрости! Нажми ☕ вверху экрана.", "warn");
+            return;
+          }
+          state.energy = Math.max(0, state.energy - 6);
+
+          const now = Date.now();
+          if (now - state.lastClickTime < 1400) {
+            state.combo = Math.min(2.0, Number((state.combo + 0.1).toFixed(1)));
+          } else {
+            state.combo = 1.0;
+          }
+          state.lastClickTime = now;
+
+          const baseClick = 180 + (state.upgrades.thickness_gauge || 0) * 90;
+          const earned = Math.round(baseClick * state.combo);
+          modifyBalance(earned);
+          state.stats.totalClicks += 1;
+
+          if (state.stats.totalClicks % 15 === 0) state.reputation += 1;
+          sfx.play("coin");
+
+          if (Math.random() < 0.09 && state.marketCars.length < 14) {
+            const affordablePool = CAR_CATALOG.filter((c) => c.basePrice <= Math.max(300000, state.balance * 1.8));
+            const hotCar = generateCarListing(randomChoice(affordablePool), true);
+            state.marketCars.unshift(hotCar);
+            addLog("work", `Перехвачено срочное объявление: ${hotCar.model} за ${formatRub(hotCar.price)}! (+${formatRub(earned)})`);
+            showToast(`Срочный вариант в Магазине: ${hotCar.model}!`);
+          } else {
+            addLog("work", `Поездка по району и расклейка визиток: +${formatRub(earned)}.`);
+          }
+
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("inspectOrderBtn").addEventListener("click", () => {
+          const now = Date.now();
+          if (now < state.inspectCooldownUntil) return;
+          if (state.energy < 18 && state.autoCoffee) buyEnergyRefill(true);
+          if (state.energy < 18) {
+            sfx.play("error");
+            showToast("Нужно 18 ⚡ бодрости", "warn");
+            return;
+          }
+          state.energy -= 18;
+          const reward = 1900 + state.reputation * 35;
+          modifyBalance(reward);
+          state.reputation += 2;
+          state.inspectCooldownUntil = now + 12000;
+          sfx.play("buy");
+          addLog("work", `Выездной осмотр клиенту: +${formatRub(reward)} и +2 ★.`);
+          showToast(`Выездной осмотр: +${formatRub(reward)}`);
+          updateCooldownUI();
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("garageShiftBtn").addEventListener("click", () => {
+          const now = Date.now();
+          if (now < state.shiftCooldownUntil) return;
+          if (state.energy < 32 && state.autoCoffee) buyEnergyRefill(true);
+          if (state.energy < 32) {
+            sfx.play("error");
+            showToast("Нужно 32 ⚡ бодрости", "warn");
+            return;
+          }
+          state.energy -= 32;
+          const reward = 3600 + (state.upgrades.garage_hoist || 0) * 950;
+          modifyBalance(reward);
+          state.reputation += 3;
+          state.shiftCooldownUntil = now + 18000;
+          sfx.play("repair");
+          addLog("work", `Смена на подъемнике СТО: +${formatRub(reward)}.`);
+          showToast(`Смена на СТО: +${formatRub(reward)}`);
+          updateCooldownUI();
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("scoutDealBtn").addEventListener("click", () => {
+          const cost = 2500;
+          if (state.balance < cost) {
+            sfx.play("error");
+            showToast("Нужно 2 500 ₽", "error");
+            return;
+          }
+          modifyBalance(-cost);
+          const pool = CAR_CATALOG.filter((c) => c.basePrice <= Math.max(350000, state.balance * 1.9));
+          const hotCar = generateCarListing(randomChoice(pool), true);
+          state.marketCars.unshift(hotCar);
+          sfx.play("buy");
+          addLog("deal", `Найден срочный выкуп: ${hotCar.model} за ${formatRub(hotCar.price)}.`);
+          showToast(`Добавлена ${hotCar.model} со скидкой!`);
+          switchTab("tab-market");
+          renderAll();
+          saveState();
+        });
+
+        // Спецзаказы клиентов
+        document.getElementById("clientOrdersList").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-action='fulfill-order']");
+          if (!btn) return;
+          const ordIdx = state.clientOrders.findIndex((o) => o.id === btn.dataset.orderid);
+          const carIdx = state.garageCars.findIndex((c) => c.id === btn.dataset.carid);
+          if (ordIdx === -1 || carIdx === -1) return;
+
+          const ord = state.clientOrders[ordIdx];
+          const car = state.garageCars[carIdx];
+          const payout = Number((calculateMarketValue(car) * (1 + ord.bonusPct)).toFixed(2));
+          const profit = Number((payout - (car.purchasePrice + car.investedRepair)).toFixed(2));
+
+          modifyBalance(payout);
+          state.garageCars.splice(carIdx, 1);
+          state.stats.totalSold += 1;
+          state.stats.totalProfit = Number((state.stats.totalProfit + profit).toFixed(2));
+          state.reputation += ord.repReward;
+          if (profit > 0) updateQuestProgress("q_sell", 1);
+
+          const randomTier = randomChoice(["АвтоВАЗ", "Бюджет", "Комфорт", "Бизнес"]);
+          state.clientOrders[ordIdx] = {
+            id: "ord_" + Date.now(),
+            clientName: randomChoice(["Виталий", "Автопарк", "Антон", "Екатерина"]),
+            reqTitle: `Автомобиль класса «${randomTier}» в состоянии от 80%`,
+            minCond: 80,
+            allowedTiers: [randomTier],
+            bonusPct: 0.20,
+            repReward: 6
+          };
+
+          sfx.play("sell");
+          addLog("sell", `Выполнен заказ клиента: ${car.model} сдана за ${formatRub(payout)} (навар +${formatRub(profit)}).`);
+          showToast(`Заказ выполнен! Навар: +${formatRub(profit)}`);
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("questsList").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-quest]");
+          if (!btn) return;
+          const q = state.quests.find((item) => item.id === btn.dataset.quest);
+          if (!q || q.claimed || q.progress < q.target) return;
+
+          q.claimed = true;
+          modifyBalance(q.rewardMoney);
+          state.reputation += q.rewardRep;
+          sfx.play("sell");
+          addLog("sell", `Получена премия за контракт «${q.title}»: +${formatRub(q.rewardMoney)}.`);
+          showToast(`Бонус: +${formatRub(q.rewardMoney)}!`);
+          renderAll();
+          saveState();
+        });
+
+        document.querySelectorAll("[data-logfilter]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.logFilter = btn.dataset.logfilter;
+            document.querySelectorAll("[data-logfilter]").forEach((b) => {
+              b.classList.toggle("active", b.dataset.logfilter === state.logFilter);
+            });
+            renderTerminal();
+          });
+        });
+
+        // Поиск и фильтры Магазина
+        document.getElementById("marketSearchInput").addEventListener("input", renderMarket);
+        document.getElementById("engineFilterSelect").addEventListener("change", renderMarket);
+        document.getElementById("sortFilterSelect").addEventListener("change", renderMarket);
+        document.getElementById("minPriceInput").addEventListener("input", () => {
+          document.querySelectorAll("#priceQuickChips .chip").forEach((c) => c.classList.remove("active"));
+          renderMarket();
+        });
+        document.getElementById("maxPriceInput").addEventListener("input", () => {
+          document.querySelectorAll("#priceQuickChips .chip").forEach((c) => c.classList.remove("active"));
+          renderMarket();
+        });
+
+        document.getElementById("priceQuickChips").addEventListener("click", (e) => {
+          const chip = e.target.closest(".chip");
+          if (!chip) return;
+          document.querySelectorAll("#priceQuickChips .chip").forEach((c) => c.classList.remove("active"));
+          chip.classList.add("active");
+          document.getElementById("minPriceInput").value = chip.dataset.min;
+          document.getElementById("maxPriceInput").value = chip.dataset.max;
+          renderMarket();
+        });
+
+        document.getElementById("refreshMarketBtn").addEventListener("click", () => {
+          const cost = 1500;
+          if (state.balance < cost) {
+            sfx.play("error");
+            showToast("Нужно 1 500 ₽", "error");
+            return;
+          }
+          modifyBalance(-cost);
+          seedInitialMarket();
+          state.marketCars.unshift(generateCarListing(null, true));
+          sfx.play("coin");
+          showToast("Объявления обновлены");
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("marketCarsList").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-action]");
+          if (!btn) return;
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          if (action === "autoteka-car") checkAutoteka(id);
+          if (action === "inspect-car") inspectMarketCar(id);
+          if (action === "bargain-car") openBargainModal(id);
+          if (action === "buy-car") buyMarketCar(id);
+        });
+
+        // Модальное окно интерактивного торга
+        document.getElementById("closeBargainModalBtn").addEventListener("click", () => {
+          document.getElementById("bargainModal").classList.remove("open");
+        });
+        document.getElementById("bargainArgsContainer").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-barg]");
+          if (!btn) return;
+          executeBargainStep(btn.dataset.barg);
+        });
+        document.getElementById("bargainBuyNowBtn").addEventListener("click", () => {
+          if (activeBargainCarId) buyMarketCar(activeBargainCarId);
+        });
+
+        // Слепой Аукцион
+        document.getElementById("auctionContainer").addEventListener("click", (e) => {
+          if (e.target.id === "skipAuctionLotBtn") {
+            if (state.balance < 1000) return;
+            modifyBalance(-1000);
+            generateAuctionLot();
+            renderMarket();
+            saveState();
+          } else if (e.target.id === "buyAuctionLotBtn") {
+            const lot = state.auctionLot;
+            if (!lot || state.garageCars.length >= state.garageCapacity || state.balance < lot.currentBid) return;
+
+            modifyBalance(-lot.currentBid);
+            const boughtCar = {
+              ...lot.car,
+              autotekaChecked: true,
+              defects: lot.car.defects.map((d) => ({ ...d, revealed: true })),
+              purchasePrice: lot.currentBid,
+              investedRepair: 0.00,
+              isSelling: false,
+              sellProgress: 0,
+              currentOffer: null
+            };
+            state.garageCars.unshift(boughtCar);
+            state.stats.totalBought += 1;
+            state.reputation += 3;
+            updateQuestProgress("q_buy", 1);
+            sfx.play("buy");
+            addLog("buy", `Выкуплен лот слепого аукциона: ${boughtCar.model} за ${formatRub(lot.currentBid)}.`);
+            showToast(`Лот ${boughtCar.model} доставлен в Гараж!`);
+            generateAuctionLot();
+            switchTab("tab-garage");
+            renderAll();
+            saveState();
+          }
+        });
+
+        // Поездки в Регионы
+        document.getElementById("regionsList").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-action='go-region']");
+          if (!btn) return;
+          const reg = REGIONS_DATA.find((r) => r.id === btn.dataset.regid);
+          if (!reg || state.balance < reg.tripCost || state.energy < reg.energyCost) return;
+
+          modifyBalance(-reg.tripCost);
+          state.energy -= reg.energyCost;
+
+          const pool = CAR_CATALOG.filter((c) => reg.tiers.includes(c.tier));
+          const tpl = randomChoice(pool.length ? pool : CAR_CATALOG);
+          const regCar = generateCarListing(tpl, true, [68, 92]);
+          regCar.price = Math.round((calculateMarketValue(regCar) * (1 - reg.discountPct)) / 500) * 500;
+          regCar.sellerName = `Регион: ${reg.name}`;
+
+          state.marketCars.unshift(regCar);
+          sfx.play("buy");
+          addLog("deal", `Пригнан вариант из региона «${reg.name}»: ${regCar.model} за ${formatRub(regCar.price)}!`);
+          showToast(`Найден авто в регионе: ${regCar.model}!`);
+
+          // Переключаем на список объявлений, чтобы игрок сразу увидел найденную тачку
+          document.querySelectorAll("#marketSegments .seg-btn").forEach((b) => {
+            b.classList.toggle("active", b.dataset.marketseg === "sub-listings");
+          });
+          document.querySelectorAll("#tab-market .subview").forEach((sv) => {
+            sv.classList.toggle("active", sv.id === "sub-listings");
+          });
+
+          renderAll();
+          saveState();
+        });
+
+        // Гараж
+        document.getElementById("garageCarsList").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-action]");
+          if (!btn) return;
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          if (action === "toggle-workshop") {
+            state.openWorkshops[id] = !state.openWorkshops[id];
+            renderGarage();
+            saveState();
+          }
+          if (action === "fix-single-defect") fixSingleDefect(id, parseInt(btn.dataset.defectidx, 10));
+          if (action === "repair-node") repairGarageCar(id, btn.dataset.node);
+          if (action === "repair-car") repairGarageCar(id, "combined");
+          if (action === "tune-car") tuneGarageCar(id, btn.dataset.tune);
+          if (action === "detailing-car") performDetailing(id);
+          if (action === "scrap-car") scrapGarageCar(id);
+          if (action === "sell-car") startSellingCar(id);
+          if (action === "accept-offer-white") finalizeCarSale(id, false);
+          if (action === "accept-offer-grey") finalizeCarSale(id, true);
+          if (action === "push-buyer") pushBuyerPrice(id);
+          if (action === "next-buyer") startSellingCar(id);
+        });
+
+        document.getElementById("expandGarageBtn").addEventListener("click", () => {
+          const expandCost = 85000 + (state.garageCapacity - 2) * 95000;
+          if (state.balance < expandCost) {
+            sfx.play("error");
+            showToast("Недостаточно средств", "error");
+            return;
+          }
+          modifyBalance(-expandCost);
+          state.garageCapacity += 1;
+          state.reputation += 6;
+          sfx.play("buy");
+          addLog("repair", `Куплен новый бокс! Вместимость гаража: ${state.garageCapacity}.`);
+          showToast(`Гараж расширен до ${state.garageCapacity} мест!`);
+          checkAchievements();
+          renderAll();
+          saveState();
+        });
+
+        // Бизнес и Банк
+        document.getElementById("upgradesList").addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-upgrade]");
+          if (!btn) return;
+          const upId = btn.dataset.upgrade;
+          const def = UPGRADE_DEFINITIONS.find((u) => u.id === upId);
+          if (!def) return;
+
+          const lvl = state.upgrades[upId] || 0;
+          const cost = Math.round((def.baseCost * Math.pow(def.costMult, lvl)) / 100) * 100;
+          if (state.balance < cost) {
+            sfx.play("error");
+            showToast("Недостаточно средств", "error");
+            return;
+          }
+
+          modifyBalance(-cost);
+          state.upgrades[upId] = lvl + 1;
+          state.reputation += 4;
+          sfx.play("buy");
+          addLog("repair", `Улучшено «${def.name}» до Ур. ${lvl + 1}.`);
+          showToast(`${def.name} (Ур. ${lvl + 1})`);
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("depositAddBtn").addEventListener("click", () => {
+          if (state.balance < 25000) return;
+          modifyBalance(-25000);
+          state.bankDeposit = Number((state.bankDeposit + 25000).toFixed(2));
+          sfx.play("coin");
+          addLog("deal", "Пополнен банковский вклад на 25 000.00 ₽ под 1.5% в день.");
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("depositWithdrawBtn").addEventListener("click", () => {
+          if (state.bankDeposit <= 0) return;
+          const amt = state.bankDeposit;
+          state.bankDeposit = 0;
+          modifyBalance(amt);
+          sfx.play("sell");
+          addLog("deal", `Снято со сберегательного вклада: +${formatRub(amt)}.`);
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("loanTakeBtn").addEventListener("click", () => {
+          if (state.bankLoan >= 300000) return;
+          state.bankLoan = Number((state.bankLoan + 50000).toFixed(2));
+          modifyBalance(50000);
+          sfx.play("buy");
+          addLog("alert", "Взят оборотный кредит +50 000.00 ₽ (ставка 2.5% в игровой день).");
+          showToast("Получен кредит +50 000 ₽", "warn");
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("loanRepayBtn").addEventListener("click", () => {
+          if (state.bankLoan <= 0) return;
+          const pay = Math.min(50000, state.bankLoan);
+          if (state.balance < pay) return;
+          modifyBalance(-pay);
+          state.bankLoan = Number((state.bankLoan - pay).toFixed(2));
+          sfx.play("coin");
+          addLog("deal", `Погашена часть кредита: -${formatRub(pay)}. Остаток долга: ${formatRub(state.bankLoan)}.`);
+          showToast("Кредит погашен!");
+          renderAll();
+          saveState();
+        });
+
+        // Настройки
+        document.getElementById("themeSelectorGrid").addEventListener("click", (e) => {
+          const card = e.target.closest("[data-settheme]");
+          if (!card) return;
+          applyTheme(card.dataset.settheme);
+          saveState();
+          showToast("Тема оформления изменена");
+        });
+
+        document.getElementById("saveTitleBtn").addEventListener("click", () => {
+          const val = (document.getElementById("customTitleInput").value || "").trim();
+          state.customGarageTitle = val || "Ремонт и Навар";
+          renderHeaderAndStats();
+          saveState();
+          showToast("Название сохранено!");
+        });
+
+        document.getElementById("soundToggleSwitch").addEventListener("click", () => {
+          sfx.enabled = !sfx.enabled;
+          state.soundEnabled = sfx.enabled;
+          renderHeaderAndStats();
+          saveState();
+        });
+
+        document.getElementById("compactModeSwitch").addEventListener("click", () => {
+          state.compactCards = !state.compactCards;
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("autoCoffeeSwitch").addEventListener("click", () => {
+          state.autoCoffee = !state.autoCoffee;
+          renderHeaderAndStats();
+          saveState();
+        });
+
+        document.getElementById("applyPromoBtn").addEventListener("click", () => {
+          const input = document.getElementById("promoCodeInput");
+          const code = (input.value || "").trim().toUpperCase();
+          if (!code) return;
+
+          if (!PROMO_CODES[code]) {
+            sfx.play("error");
+            showToast("Неизвестный промокод", "error");
+            return;
+          }
+          if (state.usedPromos.includes(code)) {
+            sfx.play("error");
+            showToast("Этот промокод уже активирован!", "warn");
+            return;
+          }
+
+          const bonus = PROMO_CODES[code];
+          state.usedPromos.push(code);
+          modifyBalance(bonus.money);
+          state.reputation += bonus.rep;
+          input.value = "";
+          sfx.play("sell");
+          addLog("deal", bonus.title);
+          showToast(bonus.title);
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("exportSaveBtn").addEventListener("click", () => {
+          try {
+            const data = localStorage.getItem(STORAGE_KEY) || "";
+            if (navigator.clipboard && data) {
+              navigator.clipboard.writeText(data);
+            }
+            showToast("Код сохранения скопирован в буфер обмена!");
+          } catch (e) {
+            showToast("Сохранение записано в браузере");
+          }
+        });
+
+        // Внутристраничное модальное окно сброса (без блокирующего confirm)
+        document.getElementById("resetSaveBtn").addEventListener("click", () => {
+          document.getElementById("confirmResetModal").classList.add("open");
+        });
+        document.getElementById("cancelResetModalBtn").addEventListener("click", () => {
+          document.getElementById("confirmResetModal").classList.remove("open");
+        });
+        document.getElementById("confirmResetModalBtn").addEventListener("click", () => {
+          document.getElementById("confirmResetModal").classList.remove("open");
+          try {
+            localStorage.removeItem(STORAGE_KEY);
+          } catch (e) {}
+          state = createDefaultState();
+          seedInitialMarket();
+          applyTheme("graphite");
+          renderAll();
+          saveState();
+          showToast("Карьера начата заново со 115 000 ₽!");
+        });
+      }
+
+      function updateCooldownUI() {
+        const now = Date.now();
+        const inspBtn = document.getElementById("inspectOrderBtn");
+        const inspTxt = document.getElementById("inspectCooldownText");
+        const inspRem = Math.ceil((state.inspectCooldownUntil - now) / 1000);
+        if (inspRem > 0) {
+          inspBtn.disabled = true;
+          inspTxt.textContent = `Ждать ${inspRem} с...`;
+        } else {
+          inspBtn.disabled = state.energy < 18 && !state.autoCoffee;
+          inspTxt.textContent = "Осмотр клиенту (-18 ⚡)";
+        }
+
+        const shiftBtn = document.getElementById("garageShiftBtn");
+        const shiftTxt = document.getElementById("shiftCooldownText");
+        const shiftRem = Math.ceil((state.shiftCooldownUntil - now) / 1000);
+        if (shiftRem > 0) {
+          shiftBtn.disabled = true;
+          shiftTxt.textContent = `Отдых ${shiftRem} с...`;
+        } else {
+          shiftBtn.disabled = state.energy < 32 && !state.autoCoffee;
+          shiftTxt.textContent = "Калым в боксе (-32 ⚡)";
+        }
+      }
+
+      // Ежедневный расчет экономики (1 игровой день = 60 секунд)
+      function processNewGameDay() {
+        state.day += 1;
+        state.coffeesToday = 0;
+
+        const upkeep = getDailyUpkeep();
+        const agencyIncome = (state.upgrades.auto_scout || 0) * 4200;
+        const depositInterest = Math.round(state.bankDeposit * 0.015);
+        const loanInterest = Math.round(state.bankLoan * 0.025);
+
+        if (depositInterest > 0) {
+          state.bankDeposit = Number((state.bankDeposit + depositInterest).toFixed(2));
+        }
+
+        const netDaily = agencyIncome - upkeep - loanInterest;
+        state.balance = Number((state.balance + netDaily).toFixed(2));
+
+        // Смена рыночного тренда каждые 2 дня
+        if (state.day % 2 === 0) {
+          const newTrend = randomChoice(MARKET_TRENDS);
+          state.marketTrendId = newTrend.id;
+          showToast(`Тренд рынка: ${newTrend.name}`);
+        }
+
+        addLog(
+          "deal",
+          `Наступил День ${state.day}: аренда гаража -${upkeep.toLocaleString("ru-RU")} ₽` +
+            (agencyIncome > 0 ? `, сеть подбора +${agencyIncome.toLocaleString("ru-RU")} ₽` : "") +
+            (loanInterest > 0 ? `, проценты по кредиту -${loanInterest.toLocaleString("ru-RU")} ₽` : "") +
+            (depositInterest > 0 ? `, проценты по вкладу +${depositInterest.toLocaleString("ru-RU")} ₽` : "") +
+            "."
+        );
+
+        renderAll();
+        saveState();
+      }
+
+      function startGameLoop() {
+        setInterval(() => {
+          const now = new Date();
+          document.getElementById("clockDisplay").textContent = now.toTimeString().slice(0, 5);
+
+          // Плавное восстановление бодрости (+1.1 ед./сек)
+          if (state.energy < state.maxEnergy) {
+            state.energy = Math.min(state.maxEnergy, Number((state.energy + 1.1).toFixed(1)));
+          }
+
+          if (state.combo > 1.0 && Date.now() - state.lastClickTime > 2000) {
+            state.combo = Math.max(1.0, Number((state.combo - 0.1).toFixed(1)));
+          }
+
+          state.dayTickSeconds = (state.dayTickSeconds || 0) + 1;
+          if (state.dayTickSeconds >= 60) {
+            state.dayTickSeconds = 0;
+            processNewGameDay();
+          }
+
+          updateCooldownUI();
+          renderHeaderAndStats();
+        }, 1000);
+
+        setInterval(() => {
+          if (state.marketCars.length >= 13) state.marketCars.pop();
+          const isHot = Math.random() < 0.32;
+          const freshCar = generateCarListing(null, isHot);
+          state.marketCars.unshift(freshCar);
+          renderMarket();
+          renderHeaderAndStats();
+          saveState();
+        }, 30000);
+      }
+
+      loadState();
+      bindEvents();
+      renderAll();
+      updateCooldownUI();
+      startGameLoop();
+    })();
+  </script>
+</body>
+</html>
